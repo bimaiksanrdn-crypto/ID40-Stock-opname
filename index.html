@@ -11,7 +11,7 @@ body {
   padding: 20px;
 }
 .card {
-  max-width: 400px;
+  max-width: 420px;
   margin: 40px auto;
   padding: 24px;
   background: white;
@@ -33,19 +33,90 @@ button {
   border: none;
   font-size: 16px;
 }
+#status {
+  overflow-wrap: anywhere;
+  font-size: 14px;
+}
 </style>
 </head>
 <body>
 <div class="card">
   <h2>ID40 Stock Opname</h2>
-  <p>Aplikasi penghitungan stok toko</p>
-  <label>Email karyawan</label>
-  <input type="email" placeholder="Masukkan email">
-  <label>Kata sandi</label>
-  <input type="password" placeholder="Masukkan kata sandi">
-  <button onclick="alert('Tampilan awal berhasil dibuat!')">
-    Login
-  </button>
+  <p>Silakan login menggunakan akun terdaftar.</p>
+
+  <form id="loginForm">
+    <label>Email</label>
+    <input id="email" type="email" required
+           placeholder="Email akun Supabase">
+
+    <label>Kata sandi</label>
+    <input id="password" type="password" required
+           placeholder="Kata sandi akun">
+
+    <button type="submit">Login</button>
+  </form>
+
+  <p id="status" role="status"></p>
+  <button id="logoutBtn" hidden>Logout</button>
 </div>
+
+<script type="module">
+import { createClient } from
+  'https://esm.sh/@supabase/supabase-js@2';
+
+const SUPABASE_URL = 'https://zfxewmzsvmzxrfqbkmre.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_thVM_xwRc90C7MYlpIxX2w__FiG5RA1';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const form = document.getElementById('loginForm');
+const status = document.getElementById('status');
+const logoutBtn = document.getElementById('logoutBtn');
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  status.textContent = 'Sedang memeriksa akun...';
+
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    status.textContent = 'Password salah coy: ' + error.message;
+    return;
+  }
+
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('full_name, role')
+    .eq('id', data.user.id)
+    .maybeSingle();
+
+  if (profileError || !profile) {
+    await supabase.auth.signOut();
+    status.textContent =
+      'Profil belum tersedia atau tidak dapat diakses. Hubungi supervisor.';
+    return;
+  }
+
+  status.textContent =
+    'Login berhasil. Halo, ' + profile.full_name +
+    '! Peran: ' + profile.role;
+
+  form.hidden = true;
+  logoutBtn.hidden = false;
+});
+
+logoutBtn.addEventListener('click', async () => {
+  await supabase.auth.signOut();
+  form.hidden = false;
+  logoutBtn.hidden = true;
+  status.textContent = 'Kamu sudah logout.';
+});
+</script>
 </body>
 </html>
