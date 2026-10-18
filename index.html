@@ -333,25 +333,45 @@ async function searchProducts() {
     const row = document.createElement('tr');
 
     
+
 const imageCell = document.createElement('td');
+const img = document.createElement('img');
+
+img.src = product.image_url || '';
+img.alt = product.product_name || 'Gambar produk';
+img.loading = 'lazy';
+img.style.width = '70px';
+img.style.height = '70px';
+img.style.objectFit = 'contain';
+
 if (product.image_url) {
-  const img = document.createElement('img');
-  img.src = product.image_url;
-  img.alt = product.product_name || 'Gambar produk';
-  img.loading = 'lazy';
-  img.style.width = '70px';
-  img.style.height = '70px';
-  img.style.objectFit = 'contain';
+  imageCell.appendChild(img);
   img.onerror = () => {
     imageCell.textContent = 'Gambar tidak tersedia';
   };
-  imageCell.appendChild(img);
 } else {
   imageCell.textContent = 'Tidak ada gambar';
 }
+
 row.appendChild(imageCell);
 
-[
+const values = [
+  product.barcode,
+  product.product_name,
+  product.price == null
+    ? '—'
+    : new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        maximumFractionDigits: 0
+      }).format(product.price),
+  product.system_stock
+];
+
+values.forEach(value => {
+  const cell = document.createElement('td');
+  cell.textContent = value == null ? '—' : String(value);
+  row.appendChild(cell);});
   product.barcode,
   product.product_name,
   product.price == null
