@@ -303,7 +303,7 @@ async function searchProducts() {
 
   let query = supabase
     .from('products')
-    .select('barcode, product_name, system_stock')
+    .select('barcode, product_name, system_stock, price, image_url')
     .order('product_name')
     .limit(100);
 
@@ -332,12 +332,42 @@ async function searchProducts() {
   data.forEach(product => {
     const row = document.createElement('tr');
 
-    [product.barcode, product.product_name, product.system_stock]
-      .forEach(value => {
-        const cell = document.createElement('td');
-        cell.textContent = value == null ? '—' : String(value);
-        row.appendChild(cell);
-      });
+    
+const imageCell = document.createElement('td');
+if (product.image_url) {
+  const img = document.createElement('img');
+  img.src = product.image_url;
+  img.alt = product.product_name || 'Gambar produk';
+  img.loading = 'lazy';
+  img.style.width = '70px';
+  img.style.height = '70px';
+  img.style.objectFit = 'contain';
+  img.onerror = () => {
+    imageCell.textContent = 'Gambar tidak tersedia';
+  };
+  imageCell.appendChild(img);
+} else {
+  imageCell.textContent = 'Tidak ada gambar';
+}
+row.appendChild(imageCell);
+
+[
+  product.barcode,
+  product.product_name,
+  product.price == null
+    ? '—'
+    : new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        maximumFractionDigits: 0
+      }).format(product.price),
+  product.system_stock
+].forEach(value => {
+  const cell = document.createElement('td');
+  cell.textContent = value == null ? '—' : String(value);
+  row.appendChild(cell);
+});
+
 
     rows.appendChild(row);
   });
