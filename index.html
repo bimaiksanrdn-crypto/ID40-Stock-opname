@@ -169,9 +169,11 @@ th, td {
       <table>
         <thead>
           <tr>
-            <th>Barcode</th>
-            <th>Nama Barang</th>
-            <th>Stok Sistem</th>
+            <<th>Gambar</th>
+<th>Barcode</th>
+<th>Nama Barang</th>
+<th>Harga</th>
+<th>Stok Sistem</th>
           </tr>
         </thead>
         <tbody id="productRows"></tbody>
@@ -304,12 +306,47 @@ async function searchProducts() {
     return;
   }
   data.forEach(product => {
-    const row = document.createElement('tr');
-    [product.barcode, product.product_name, product.system_stock]
-      .forEach(value => {
-        const cell = document.createElement('td');
-        cell.textContent = value == null ? '—' : String(value);
-        row.appendChild(cell);
+    
+const imageCell = document.createElement('td');
+const img = document.createElement('img');
+
+img.src = product.image_url || '';
+img.alt = product.product_name || 'Gambar produk';
+img.loading = 'lazy';
+img.style.width = '70px';
+img.style.height = '70px';
+img.style.objectFit = 'contain';
+
+if (product.image_url) {
+  imageCell.appendChild(img);
+  img.onerror = () => {
+    imageCell.textContent = 'Gambar tidak tersedia';
+  };
+} else {
+  imageCell.textContent = 'Tidak ada gambar';
+}
+
+row.appendChild(imageCell);
+
+const values = [
+  product.barcode,
+  product.product_name,
+  product.price == null
+    ? '—'
+    : new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        maximumFractionDigits: 0
+      }).format(product.price),
+  product.system_stock
+];
+
+values.forEach(value => {
+  const cell = document.createElement('td');
+  cell.textContent = value == null ? '—' : String(value);
+  row.appendChild(cell);
+});
+
       });
 
 form.addEventListener('submit', async (event) => {
