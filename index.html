@@ -2,7 +2,12 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#080914">
+<meta name="description" content="ID40 Cyberpunk Stock Opname — aplikasi hitung stok barang">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>ID40 // Cyberpunk Stock Opname</title>
 <style>
 * { box-sizing: border-box; }
@@ -180,6 +185,27 @@ input,button,select{width:100%;padding:13px;margin-top:10px;border:1px solid rgb
       <p id="sessionStatus" class="small"></p>
     </div>
 
+    <div class="card" id="savedCountsCard">
+      <h3>Riwayat Hasil Stock Opname</h3>
+      <p class="small">Pilih satu sesi untuk menarik hasil yang sudah tersimpan di tabel <code>so_counts</code>.</p>
+      <label for="historySessionSelect">Pilih sesi yang ingin dilihat</label>
+      <select id="historySessionSelect" class="session-select">
+        <option value="">Memuat sesi...</option>
+      </select>
+      <button id="loadCountsBtn" type="button">Tarik Data Sesi</button>
+      <p id="countsStatus" class="small" role="status" aria-live="polite">Pilih sesi, lalu tekan Tarik Data Sesi.</p>
+      <div class="grid" style="margin:12px 0">
+        <div class="stat">Barang dalam sesi<strong id="historyCountTotal">—</strong></div>
+        <div class="stat">Total stok fisik<strong id="historyQtyTotal">—</strong></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Foto / Barcode</th><th>Nama Barang</th><th>Kategori</th><th>Harga</th><th>Stok Sistem</th><th>Stok Fisik</th><th>Selisih</th><th>Waktu Update</th></tr></thead>
+          <tbody id="savedCountRows"></tbody>
+        </table>
+      </div>
+    </div>
+
     <div id="supervisorNotice" class="card" hidden>
       <h3>Menu Supervisor</h3>
       <p>Akun supervisor terdeteksi. Fitur pengelolaan produk, karyawan, sesi SO, dan ekspor akan ditambahkan pada tahap berikutnya.</p>
@@ -205,6 +231,7 @@ let lastScannedBarcode = '';
 let lastScannedAt = 0;
 let countedItems = [];
 let activeSessions = [];
+let allSessions = [];
 
 function showMessage(id, message) {
   $(id).textContent = message;
@@ -526,10 +553,12 @@ async function loadDashboard() {
     showMessage('sessionStatus', 'Gagal membaca sesi: ' + sessionsResult.error.message);
   } else {
     const sessions = sessionsResult.data ?? [];
+    allSessions = sessions;
     activeSessions = sessions.filter(s => String(s.status || '').toLowerCase() === 'active');
     $('sessionTotal').textContent = activeSessions.length;
     renderSessions(sessions);
     renderActiveSessionOptions();
+    renderHistorySessionOptions();
     showMessage('sessionStatus', 'Data sesi berhasil dimuat.');
   }
 }
@@ -571,6 +600,129 @@ function renderActiveSessionOptions() {
   });
   if (activeSessions.some(session => String(session.id) === previous)) select.value = previous;
   else if (activeSessions.length === 1) select.value = String(activeSessions[0].id);
+}
+
+function renderHistorySessionOptions() {
+  const select = $('historySessionSelect');
+  const previous = select.value;
+  select.replaceChildren();
+  const placeholder = document.createElement('option');
+  placeholder.value = '';
+  placeholder.textContent = allSessions.length ? 'Pilih satu sesi stock opname' : 'Belum ada sesi';
+  select.appendChild(placeholder);
+  allSessions.forEach(session => {
+    const option = document.createElement('option');
+    option.value = String(session.id);
+    const date = session.created_at ? new Date(session.created_at).toLocaleDateString('id-ID') : '';
+    option.textContent = `${session.session_name || ('Sesi ' + session.id)} — ${session.status || 'tanpa status'}${date ? ' — ' + date : ''}`;
+    select.appendChild(option);
+  });
+  if (allSessions.some(session => String(session.id) === previous)) select.value = previous;
+}
+
+function makeCell(value) {
+  const td = document.createElement('td');
+  td.textContent = value == null || value === '' ? '—' : String(value);
+  return td;
+}
+
+function appendHistoryProductCell(row, product) {
+  const td = document.createElement('td');
+  td.className = 'barcode-cell';
+  const img = document.createElement('img');
+  img.className = 'product-thumb';
+  img.alt = '';
+  img.loading = 'lazy';
+  const savedUrl = String(product?.image_url || '').trim();
+  img.src = savedUrl || getProductImageUrl(product?.barcode || '');
+  img.onerror = () => {
+    if (savedUrl && !img.dataset.fallback) {
+      img.dataset.fallback = '1';
+      img.src = getProductImageUrl(product?.barcode || '');
+    } else {
+      const placeholder = document.createElement('span');
+      placeholder.className = 'thumb-placeholder';
+      placeholder.textContent = 'NO IMG';
+      img.replaceWith(placeholder);
+    }
+  };
+  td.appendChild(img);
+  const code = document.createElement('span');
+  code.textContent = product?.barcode || 'Barcode tidak tersedia';
+  td.appendChild(code);
+  row.appendChild(td);
+}
+
+async function loadSavedCounts() {
+  const sessionId = $('historySessionSelect').value;
+  const body = $('savedCountRows');
+  body.replaceChildren();
+  $('historyCountTotal').textContent = '—';
+  $('historyQtyTotal').textContent = '—';
+  if (!sessionId) {
+    showMessage('countsStatus', 'Pilih satu sesi terlebih dahulu.');
+    return;
+  }
+
+  const button = $('loadCountsBtn');
+  button.disabled = true;
+  showMessage('countsStatus', 'Mengambil hasil opname dari Supabase...');
+  try {
+    // Skema yang digunakan: so_counts(session_id, product_id, physical_qty, updated_by, updated_at).
+    const { data: counts, error: countsError } = await supabase
+      .from('so_counts')
+      .select('session_id, product_id, physical_qty, updated_by, updated_at')
+      .eq('session_id', sessionId)
+      .order('updated_at', { ascending: false });
+    if (countsError) throw countsError;
+
+    const productIds = [...new Set((counts || []).map(row => row.product_id).filter(id => id != null))];
+    let productsById = {};
+    if (productIds.length) {
+      const { data: products, error: productsError } = await supabase
+        .from('products')
+        .select('id, barcode, product_name, category, price, system_stock, image_url')
+        .in('id', productIds);
+      if (productsError) throw productsError;
+      productsById = Object.fromEntries((products || []).map(product => [String(product.id), product]));
+    }
+
+    let totalQty = 0;
+    (counts || []).forEach(count => {
+      const product = productsById[String(count.product_id)] || {};
+      const physical = Number(count.physical_qty || 0);
+      const system = Number(product.system_stock || 0);
+      totalQty += physical;
+      const row = document.createElement('tr');
+      appendHistoryProductCell(row, product);
+      row.appendChild(makeCell(product.product_name));
+      row.appendChild(makeCell(product.category));
+      row.appendChild(makeCell(product.price == null ? '—' : Number(product.price).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 })));
+      row.appendChild(makeCell(product.system_stock));
+      row.appendChild(makeCell(physical));
+      const diff = physical - system;
+      const diffCell = makeCell(diff > 0 ? '+' + diff : diff);
+      if (diff < 0) diffCell.style.color = '#ff8da8';
+      else if (diff > 0) diffCell.style.color = '#35f5ff';
+      row.appendChild(diffCell);
+      row.appendChild(makeCell(count.updated_at ? new Date(count.updated_at).toLocaleString('id-ID') : '—'));
+      body.appendChild(row);
+    });
+
+    $('historyCountTotal').textContent = (counts || []).length;
+    $('historyQtyTotal').textContent = totalQty;
+    if (!counts || !counts.length) {
+      showMessage('countsStatus', 'Belum ada hasil hitungan tersimpan untuk sesi ini.');
+    } else {
+      const session = allSessions.find(item => String(item.id) === String(sessionId));
+      showMessage('countsStatus', `Berhasil menarik ${(counts || []).length} baris dari sesi “${session?.session_name || sessionId}”.`);
+    }
+  } catch (error) {
+    console.error('Gagal menarik hasil so_counts:', error);
+    showMessage('countsStatus', 'Gagal mengambil data: ' + error.message + '. Periksa nama kolom, relasi data, dan policy SELECT/RLS pada so_counts serta products.');
+  } finally {
+    button.disabled = false;
+  }
 }
 
 async function saveOpname() {
@@ -776,6 +928,13 @@ $('stopScanBtn').addEventListener('click', async () => {
 });
 $('retryScanBtn').addEventListener('click', startBarcodeScanner);
 $('saveOpnameBtn').addEventListener('click', saveOpname);
+$('loadCountsBtn').addEventListener('click', loadSavedCounts);
+$('historySessionSelect').addEventListener('change', () => {
+  $('savedCountRows').replaceChildren();
+  $('historyCountTotal').textContent = '—';
+  $('historyQtyTotal').textContent = '—';
+  showMessage('countsStatus', 'Tekan Tarik Data Sesi untuk memuat hasil sesi yang dipilih.');
+});
 
 // Tutup kamera ketika halaman ditinggalkan.
 window.addEventListener('pagehide', () => {
@@ -799,6 +958,11 @@ if (sessionData.session) {
     $('supervisorNotice').hidden = profile.role !== 'supervisor';
     await loadDashboard();
   }
+}
+</script>
+<script>
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("./service-worker.js").catch(err => console.warn("Service worker belum aktif:", err)));
 }
 </script>
 </body>
