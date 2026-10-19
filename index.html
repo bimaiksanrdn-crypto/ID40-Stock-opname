@@ -199,17 +199,28 @@ function getProductImageUrl(barcode) {
 function showProductImage(product) {
   const card = $('productImageCard');
   const img = $('productImage');
+  const savedUrl = String(product.image_url || '').trim();
+  const fallbackUrl = getProductImageUrl(product.barcode);
   card.hidden = false;
   $('productImageName').textContent = product.product_name || 'Nama barang tidak tersedia';
   $('productImageBarcode').textContent = 'Barcode: ' + (product.barcode || '—');
   $('productImageStatus').textContent = 'Memuat foto produk...';
+
+  // Prioritaskan URL gambar di Supabase; jika gagal, coba URL Miniso dari barcode.
   img.onerror = () => {
+    if (savedUrl && img.dataset.fallbackTried !== 'yes' && savedUrl !== fallbackUrl) {
+      img.dataset.fallbackTried = 'yes';
+      img.src = fallbackUrl;
+      return;
+    }
     card.hidden = true;
+    showMessage('productStatus', 'Foto tidak dapat dimuat. Periksa URL pada kolom image_url dan akses gambar.');
   };
   img.onload = () => {
-    $('productImageStatus').textContent = 'Foto produk berhasil dimuat.';
+    $('productImageStatus').textContent = 'Foto berhasil dimuat.';
   };
-  img.src = getProductImageUrl(product.barcode);
+  img.dataset.fallbackTried = 'no';
+  img.src = savedUrl || fallbackUrl;
 }
 
 function playScanBeep() {
@@ -291,9 +302,13 @@ function addProductToCount(product, increment = 1) {
   if (!barcode) return;
   const existing = countedItems.find(item => String(item.barcode) === barcode);
   if (existing) {
+    existing.product_id = product.id ?? existing.product_id;
+    existing.product_name = product.product_name || existing.product_name;
+    existing.system_stock = product.system_stock ?? existing.system_stock;
     existing.physical_stock = Number(existing.physical_stock || 0) + increment;
   } else {
     countedItems.push({
+      product_id: product.id,
       barcode,
       product_name: product.product_name || '',
       system_stock: product.system_stock ?? null,
@@ -440,7 +455,7 @@ async function startBarcodeScanner() {
         await searchProducts(decodedText);
         const { data, error } = await supabase
           .from('products')
-          .select('barcode, product_name, system_stock')
+          .select('id, barcode, product_name, system_stock, image_url')
           .eq('barcode', decodedText)
           .limit(1)
           .maybeSingle();
@@ -555,22 +570,27 @@ async function saveOpname() {
   button.disabled = true;
   showMessage('saveOpnameStatus', 'Menyimpan hasil opname...');
   try {
-    const payload = countedItems.map(item => ({
-      session_id: sessionId,
-      barcode: item.barcode,
-      product_name: item.product_name,
-      system_stock: item.system_stock,
-      physical_stock: item.physical_stock,
-      counted_by: currentUser.id
-    }));
-    const { error } = await supabase.from('so_items').upsert(payload, {
-      onConflict: 'session_id,barcode'
+    // so_counts memakai session_id + product_id, bukan barcode/so_items.
+    const payload = countedItems.map(item => {
+      if (!item.product_id) {
+        throw new Error(`ID produk tidak tersedia untuk barcode ${item.barcode}. Cari ulang produk lalu tambahkan hitungan.`);
+      }
+      return {
+        session_id: Number(sessionId),
+        product_id: Number(item.product_id),
+        physical_qty: Number(item.physical_stock),
+        updated_by: currentUser.id,
+        updated_at: new Date().toISOString()
+      };
+    });
+    const { error } = await supabase.from('so_counts').upsert(payload, {
+      onConflict: 'session_id,product_id'
     });
     if (error) throw error;
     showMessage('saveOpnameStatus', `Berhasil menyimpan ${countedItems.length} barang ke sesi SO.`);
   } catch (error) {
     console.error('Save opname error:', error);
-    showMessage('saveOpnameStatus', 'Gagal menyimpan: ' + error.message + '. Pastikan tabel so_items dan kebijakan akses sudah dibuat di Supabase (lihat file SQL pendamping).');
+    showMessage('saveOpnameStatus', 'Gagal menyimpan: ' + error.message + '. Pastikan policy tabel so_counts mengizinkan insert/update untuk pengguna login.');
   } finally {
     button.disabled = false;
   }
@@ -589,14 +609,14 @@ async function searchProducts(scannedBarcode = '') {
   showMessage('productStatus', 'Mencari barang...');
   let query = supabase
     .from('products')
-    .select('barcode, product_name, system_stock')
+    .select('id, barcode, product_name, system_stock, image_url')
     .order('product_name')
     .limit(100);
 
   // Hasil scan dicari sebagai barcode persis agar tidak salah cocok dengan nama barang.
   if (scannedBarcode) {
     query = supabase.from('products')
-      .select('barcode, product_name, system_stock')
+      .select('id, barcode, product_name, system_stock, image_url')
       .eq('barcode', scannedBarcode)
       .limit(100);
   } else {
