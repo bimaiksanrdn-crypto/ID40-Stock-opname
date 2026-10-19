@@ -4,461 +4,456 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ID40 Stock Opname</title>
+
 <style>
 * { box-sizing: border-box; }
+
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f1f5f2;
-  color: #24352b;
+margin: 0;
+font-family: Arial, sans-serif;
+background: #f1f5f2;
+color: #24352b;
 }
+
 header {
-  background: #176b45;
-  color: white;
-  padding: 20px;
+background: #176b45;
+color: white;
+padding: 20px;
 }
+
 header h2 { margin: 0 0 6px; }
 header p { margin: 0; font-size: 14px; }
-main {
-  max-width: 850px;
-  margin: auto;
-  padding: 16px;
-}
-.card {
-  max-width: 420px;
-  margin: 40px auto;
-  padding: 24px;
-  background: white;
-  border-radius: 14px;
-  box-shadow: 0 3px 12px #ddd;
-  padding: 18px;
-  margin-bottom: 16px;
-  box-shadow: 0 3px 12px #0000000c;
-}
-h2 { color: #176b45; }
-input, button {
-  box-sizing: border-box;
-h3 { margin-top: 0; }
-input, button, select {
-  width: 100%;
-  padding: 13px;
-  margin-top: 12px;
-  margin-top: 10px;
-  border: 1px solid #ccd5ce;
-  border-radius: 8px;
-  font-size: 16px;
-}
-input { border: 1px solid #ccc; }
-button {
-  border: none;
-  background: #176b45;
-  color: white;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  font-weight: bold;
-}
-button.secondary {
-  background: #e5eee8;
-  color: #176b45;
-}
-button.danger { background: #b42318; }
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-.stat {
-  background: #edf7f0;
-  padding: 16px;
-  border-radius: 10px;
-}
-#status {
-.stat strong {
-  display: block;
-  font-size: 25px;
-  margin-top: 8px;
-  overflow-wrap: anywhere;
-}
-.small {
-  font-size: 13px;
-  color: #65746a;
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-th, td {
-  padding: 10px 6px;
-  border-bottom: 1px solid #e5e9e6;
-  text-align: left;
-  font-size: 14px;
-  overflow-wrap: anywhere;
-}
-.table-wrap { overflow-x: auto; }
-[hidden] { display: none !important; }
-@media (max-width: 420px) {
-  main { padding: 10px; }
-  .card { padding: 14px; }
-  .grid { gap: 8px; }
-  .stat { padding: 12px; }
-}
-</style>
-</head>
-<body>
-<div class="card">
-<header>
-  <h2>ID40 Stock Opname</h2>
-  <p>Silakan login menggunakan akun terdaftar.</p>
-  <p>Aplikasi penghitungan stok toko</p>
-</header>
-<main>
-<section id="loginCard" class="card">
-  <h3>Login</h3>
-  <p class="small">Masuk menggunakan akun yang terdaftar.</p>
 
-  <form id="loginForm">
-    <label>Email</label>
-    <input id="email" type="email" required
-           placeholder="Email akun Supabase">
-    <label for="email">Email</label>
-    <input id="email" type="email" required autocomplete="username">
-
-    <label>Kata sandi</label>
-    <label for="password">Kata sandi</label>
-    <input id="password" type="password" required
-           placeholder="Kata sandi akun">
-           autocomplete="current-password">
-
-    <button type="submit">Login</button>
-  </form>
-  <p id="loginStatus" role="status"></p>
-</section>
-<section id="dashboard" hidden>
-  <div class="card">
-    <h3 id="welcome">Dashboard</h3>
-    <p id="userInfo" class="small"></p>
-    <button id="refreshBtn">Muat ulang data</button>
-    <button id="logoutBtn" class="secondary">Logout</button>
-  </div>
-
-  <p id="status" role="status"></p>
-  <button id="logoutBtn" hidden>Logout</button>
-</div>
-  <div class="card">
-    <h3>Ringkasan</h3>
-    <div class="grid">
-      <div class="stat">
-        Jumlah produk
-        <strong id="productTotal">—</strong>
-      </div>
-      <div class="stat">
-        Sesi SO aktif
-        <strong id="sessionTotal">—</strong>
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <h3>Data Barang</h3>
-    <input id="productSearch"
-           type="search"
-           placeholder="Cari barcode atau nama barang">
-    <button id="searchBtn">Cari Barang</button>
-    <p id="productStatus" class="small"></p>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <<th>Gambar</th>
+<th>Gambar</th>
 <th>Barcode</th>
 <th>Nama Barang</th>
 <th>Harga</th>
 <th>Stok Sistem</th>
-          </tr>
-        </thead>
-        <tbody id="productRows"></tbody>
-      </table>
-    </div>
-  </div>
-  <div class="card">
-    <h3>Sesi Stock Opname</h3>
-    <p class="small">
-      Daftar sesi yang dapat dilihat oleh akun ini.
-    </p>
-    <div id="sessionList"></div>
-    <p id="sessionStatus" class="small"></p>
-  </div>
-  <div id="supervisorNotice" class="card" hidden>
-    <h3>Menu Supervisor</h3>
-    <p>
-      Akun supervisor terdeteksi. Fitur pengelolaan produk,
-      karyawan, sesi SO, dan ekspor akan ditambahkan pada tahap berikutnya.
-    </p>
-  </div>
+main {
+max-width: 850px;
+margin: auto;
+padding: 16px;
+}
+
+.card {
+background: white;
+border-radius: 14px;
+padding: 18px;
+margin-bottom: 16px;
+box-shadow: 0 3px 12px #0000000c;
+}
+
+h3 { margin-top: 0; }
+
+input, button, select {
+width: 100%;
+padding: 13px;
+margin-top: 10px;
+border: 1px solid #ccd5ce;
+border-radius: 8px;
+font-size: 16px;
+}
+
+button {
+border: none;
+background: #176b45;
+color: white;
+cursor: pointer;
+font-weight: bold;
+}
+
+button.secondary {
+background: #e5eee8;
+color: #176b45;
+}
+
+button.danger { background: #b42318; }
+
+.grid {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 12px;
+}
+
+.stat {
+background: #edf7f0;
+padding: 16px;
+border-radius: 10px;
+}
+
+.stat strong {
+display: block;
+font-size: 25px;
+margin-top: 8px;
+overflow-wrap: anywhere;
+}
+
+.small {
+font-size: 13px;
+color: #65746a;
+}
+
+table {
+width: 100%;
+border-collapse: collapse;
+}
+
+th, td {
+padding: 10px 6px;
+border-bottom: 1px solid #e5e9e6;
+text-align: left;
+font-size: 14px;
+overflow-wrap: anywhere;
+}
+
+.table-wrap { overflow-x: auto; }
+
+[hidden] { display: none !important; }
+
+@media (max-width: 420px) {
+main { padding: 10px; }
+.card { padding: 14px; }
+.grid { gap: 8px; }
+.stat { padding: 12px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>ID40 Stock Opname</h2>
+<p>Aplikasi penghitungan stok toko</p>
+</header>
+
+<main>
+
+<section id="loginCard" class="card">
+<h3>Login</h3>
+<p class="small">Masuk menggunakan akun yang terdaftar.</p>
+
+<form id="loginForm">
+<label for="email">Email</label>
+<input id="email" type="email" required autocomplete="username">
+
+<label for="password">Kata sandi</label>
+<input id="password" type="password" required
+autocomplete="current-password">
+
+<button type="submit">Login</button>
+</form>
+<p id="loginStatus" role="status"></p>
 </section>
+
+<section id="dashboard" hidden>
+<div class="card">
+<h3 id="welcome">Dashboard</h3>
+<p id="userInfo" class="small"></p>
+<button id="refreshBtn">Muat ulang data</button>
+<button id="logoutBtn" class="secondary">Logout</button>
+</div>
+
+<div class="card">
+<h3>Ringkasan</h3>
+<div class="grid">
+<div class="stat">
+Jumlah produk
+<strong id="productTotal">—</strong>
+</div>
+<div class="stat">
+Sesi SO aktif
+<strong id="sessionTotal">—</strong>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>Data Barang</h3>
+<input id="productSearch"
+type="search"
+placeholder="Cari barcode atau nama barang">
+<button id="searchBtn">Cari Barang</button>
+<p id="productStatus" class="small"></p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Barcode</th>
+<th>Nama Barang</th>
+<th>Stok Sistem</th>
+</tr>
+</thead>
+<tbody id="productRows"></tbody>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>Sesi Stock Opname</h3>
+<p class="small">
+Daftar sesi yang dapat dilihat oleh akun ini.
+</p>
+<div id="sessionList"></div>
+<p id="sessionStatus" class="small"></p>
+</div>
+
+<div id="supervisorNotice" class="card" hidden>
+<h3>Menu Supervisor</h3>
+<p>
+Akun supervisor terdeteksi. Fitur pengelolaan produk,
+karyawan, sesi SO, dan ekspor akan ditambahkan pada tahap berikutnya.
+</p>
+</div>
+</section>
+
 </main>
 
 <script type="module">
 import { createClient } from
-  'https://esm.sh/@supabase/supabase-js@2';
+'https://esm.sh/@supabase/supabase-js@2';
 
-const SUPABASE_URL = 'https://zfxewmzsvmzxrfqbkmre.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_thVM_xwRc90C7MYlpIxX2w__FiG5RA1';
 const SUPABASE_URL =
-  'https://zfxewmzsvmzxrfqbkmre.supabase.co';
+'https://zfxewmzsvmzxrfqbkmre.supabase.co';
+
 const SUPABASE_KEY =
-  'sb_publishable_thVM_xwRc90C7MYlpIxX2w__FiG5RA1';
+'sb_publishable_thVM_xwRc90C7MYlpIxX2w__FiG5RA1';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const form = document.getElementById('loginForm');
-const status = document.getElementById('status');
-const logoutBtn = document.getElementById('logoutBtn');
 const $ = id => document.getElementById(id);
+
 let currentUser = null;
 let currentProfile = null;
+
 function showMessage(id, message) {
-  $(id).textContent = message;
+$(id).textContent = message;
 }
+
 async function loadDashboard() {
-  showMessage('productStatus', 'Memuat data produk...');
-  showMessage('sessionStatus', 'Memuat sesi SO...');
-  const [productsResult, sessionsResult] = await Promise.all([
-    supabase
-      .from('products')
-      .select('id', { count: 'exact', head: true }),
-    supabase
-      .from('so_sessions')
-      .select('id, session_name, status, created_at')
-      .order('created_at', { ascending: false })
-      .limit(50)
-  ]);
-  if (productsResult.error) {
-    $('productTotal').textContent = '!';
-    showMessage(
-      'productStatus',
-      'Gagal membaca produk: ' + productsResult.error.message
-    );
-  } else {
-    $('productTotal').textContent =
-      productsResult.count ?? 0;
-    showMessage('productStatus', 'Data produk siap.');
-  }
-  if (sessionsResult.error) {
-    $('sessionTotal').textContent = '!';
-    showMessage(
-      'sessionStatus',
-      'Gagal membaca sesi: ' + sessionsResult.error.message
-    );
-  } else {
-    const sessions = sessionsResult.data ?? [];
-    $('sessionTotal').textContent =
-      sessions.filter(s => s.status === 'active').length;
-    renderSessions(sessions);
-    showMessage('sessionStatus', 'Data sesi berhasil dimuat.');
-  }
-}
-function renderSessions(sessions) {
-  const container = $('sessionList');
-  container.replaceChildren();
-  if (!sessions.length) {
-    container.textContent = 'Belum ada sesi SO.';
-    return;
-  }
-  sessions.forEach(session => {
-    const item = document.createElement('div');
-    item.className = 'stat';
-    item.style.marginBottom = '10px';
-    const title = document.createElement('strong');
-    title.style.fontSize = '16px';
-    title.textContent = session.session_name || 'Sesi tanpa nama';
-    const status = document.createElement('p');
-    status.textContent = 'Status: ' + session.status;
-    item.append(title, status);
-    container.appendChild(item);
-  });
-}
-async function searchProducts() {
-  const term = $('productSearch').value.trim();
-  const rows = $('productRows');
-  rows.replaceChildren();
-  let query = supabase
-    .from('products')
-    .select('barcode, product_name, system_stock')
-    .order('product_name')
-    .limit(100);
-  if (term) {
-    const safeTerm = term.replace(/[,%()]/g, '');
-    query = query.or(
-      `barcode.eq.${safeTerm},product_name.ilike.%${safeTerm}%`
-    );
-  }
-  const { data, error } = await query;
-  if (error) {
-    showMessage(
-      'productStatus',
-      'Gagal mencari barang: ' + error.message
-    );
-    return;
-  }
-  if (!data.length) {
-    showMessage('productStatus', 'Barang tidak ditemukan.');
-    return;
-  }
-  data.forEach(product => {
-    
-const imageCell = document.createElement('td');
-const img = document.createElement('img');
+showMessage('productStatus', 'Memuat data produk...');
+showMessage('sessionStatus', 'Memuat sesi SO...');
 
-img.src = product.image_url || '';
-img.alt = product.product_name || 'Gambar produk';
-img.loading = 'lazy';
-img.style.width = '70px';
-img.style.height = '70px';
-img.style.objectFit = 'contain';
+const [productsResult, sessionsResult] = await Promise.all([
+supabase
+.from('products')
+.select('id', { count: 'exact', head: true }),
 
-if (product.image_url) {
-  imageCell.appendChild(img);
-  img.onerror = () => {
-    imageCell.textContent = 'Gambar tidak tersedia';
-  };
+supabase
+.from('so_sessions')
+.select('id, session_name, status, created_at')
+.order('created_at', { ascending: false })
+.limit(50)
+]);
+
+if (productsResult.error) {
+$('productTotal').textContent = '!';
+showMessage(
+'productStatus',
+'Gagal membaca produk: ' + productsResult.error.message
+);
 } else {
-  imageCell.textContent = 'Tidak ada gambar';
+$('productTotal').textContent =
+productsResult.count ?? 0;
+showMessage('productStatus', 'Data produk siap.');
 }
 
-row.appendChild(imageCell);
+if (sessionsResult.error) {
+$('sessionTotal').textContent = '!';
+showMessage(
+'sessionStatus',
+'Gagal membaca sesi: ' + sessionsResult.error.message
+);
+} else {
+const sessions = sessionsResult.data ?? [];
+$('sessionTotal').textContent =
+sessions.filter(s => s.status === 'active').length;
 
-const values = [
-  product.barcode,
-  product.product_name,
-  product.price == null
-    ? '—'
-    : new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        maximumFractionDigits: 0
-      }).format(product.price),
-  product.system_stock
-];
+renderSessions(sessions);
+showMessage('sessionStatus', 'Data sesi berhasil dimuat.');
+}
+}
 
-values.forEach(value => {
-  const cell = document.createElement('td');
-  cell.textContent = value == null ? '—' : String(value);
-  row.appendChild(cell);
+function renderSessions(sessions) {
+const container = $('sessionList');
+container.replaceChildren();
+
+if (!sessions.length) {
+container.textContent = 'Belum ada sesi SO.';
+return;
+}
+
+sessions.forEach(session => {
+const item = document.createElement('div');
+item.className = 'stat';
+item.style.marginBottom = '10px';
+
+const title = document.createElement('strong');
+title.style.fontSize = '16px';
+title.textContent = session.session_name || 'Sesi tanpa nama';
+
+const status = document.createElement('p');
+status.textContent = 'Status: ' + session.status;
+
+item.append(title, status);
+container.appendChild(item);
+});
+}
+
+async function searchProducts() {
+const term = $('productSearch').value.trim();
+const rows = $('productRows');
+rows.replaceChildren();
+
+let query = supabase
+.from('products')
+.select('barcode, product_name, system_stock')
+.order('product_name')
+.limit(100);
+
+if (term) {
+const safeTerm = term.replace(/[,%()]/g, '');
+query = query.or(
+`barcode.eq.${safeTerm},product_name.ilike.%${safeTerm}%`
+);
+}
+
+const { data, error } = await query;
+
+if (error) {
+showMessage(
+'productStatus',
+'Gagal mencari barang: ' + error.message
+);
+return;
+}
+
+if (!data.length) {
+showMessage('productStatus', 'Barang tidak ditemukan.');
+return;
+}
+
+data.forEach(product => {
+const row = document.createElement('tr');
+
+[product.barcode, product.product_name, product.system_stock]
+.forEach(value => {
+const cell = document.createElement('td');
+cell.textContent = value == null ? '—' : String(value);
+row.appendChild(cell);
 });
 
-      });
+rows.appendChild(row);
+});
 
-form.addEventListener('submit', async (event) => {
-    rows.appendChild(row);
-  });
-  showMessage(
-    'productStatus',
-    `Menampilkan ${data.length} barang (maksimal 100).`
-  );
+showMessage(
+'productStatus',
+`Menampilkan ${data.length} barang (maksimal 100).`
+);
 }
+
 async function login(event) {
-  event.preventDefault();
-  status.textContent = 'Sedang memeriksa akun...';
-  showMessage('loginStatus', 'Memeriksa akun...');
+event.preventDefault();
+showMessage('loginStatus', 'Memeriksa akun...');
 
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value;
-  const email = $('email').value.trim();
-  const password = $('password').value;
+const email = $('email').value.trim();
+const password = $('password').value;
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
-
-  if (error) {
-    status.textContent = 'Password salah coy: ' + error.message;
-    showMessage('loginStatus', 'Login gagal: ' + error.message);
-    return;
-  }
-
-@@ -98,25 +372,83 @@ <h2>ID40 Stock Opname</h2>
-
-  if (profileError || !profile) {
-    await supabase.auth.signOut();
-    status.textContent =
-      'Profil belum tersedia atau tidak dapat diakses. Hubungi supervisor.';
-    showMessage(
-      'loginStatus',
-      'Profil tidak dapat diakses. Hubungi supervisor.'
-    );
-    return;
-  }
-
-  status.textContent =
-    'Login berhasil. Halo, ' + profile.full_name +
-    '! Peran: ' + profile.role;
-  currentUser = data.user;
-  currentProfile = profile;
-
-  form.hidden = true;
-  logoutBtn.hidden = false;
+const { data, error } = await supabase.auth.signInWithPassword({
+email,
+password
 });
-  $('loginCard').hidden = true;
-  $('dashboard').hidden = false;
-  $('welcome').textContent =
-    'Halo, ' + (profile.full_name || 'Pengguna') + '!';
-  $('userInfo').textContent =
-    'Email: ' + data.user.email + ' | Peran: ' + profile.role;
-  $('supervisorNotice').hidden =
-    profile.role !== 'supervisor';
-  await loadDashboard();
+
+if (error) {
+showMessage('loginStatus', 'Login gagal: ' + error.message);
+return;
 }
+
+const { data: profile, error: profileError } = await supabase
+.from('profiles')
+.select('full_name, role')
+.eq('id', data.user.id)
+.maybeSingle();
+
+if (profileError || !profile) {
+await supabase.auth.signOut();
+showMessage(
+'loginStatus',
+'Profil tidak dapat diakses. Hubungi supervisor.'
+);
+return;
+}
+
+currentUser = data.user;
+currentProfile = profile;
+
+$('loginCard').hidden = true;
+$('dashboard').hidden = false;
+$('welcome').textContent =
+'Halo, ' + (profile.full_name || 'Pengguna') + '!';
+$('userInfo').textContent =
+'Email: ' + data.user.email + ' | Peran: ' + profile.role;
+
+$('supervisorNotice').hidden =
+profile.role !== 'supervisor';
+
+await loadDashboard();
+}
+
 async function logout() {
-  const { error } = await supabase.auth.signOut();
-  if (error) {
-    alert('Logout gagal: ' + error.message);
-    return;
-  }
-  currentUser = null;
-  currentProfile = null;
-  $('dashboard').hidden = true;
-  $('loginCard').hidden = false;
-  $('loginForm').reset();
-  showMessage('loginStatus', 'Kamu sudah logout.');
+const { error } = await supabase.auth.signOut();
+
+if (error) {
+alert('Logout gagal: ' + error.message);
+return;
 }
+
+currentUser = null;
+currentProfile = null;
+$('dashboard').hidden = true;
+$('loginCard').hidden = false;
+$('loginForm').reset();
+showMessage('loginStatus', 'Kamu sudah logout.');
+}
+
 $('loginForm').addEventListener('submit', login);
 $('logoutBtn').addEventListener('click', logout);
 $('refreshBtn').addEventListener('click', loadDashboard);
 $('searchBtn').addEventListener('click', searchProducts);
 
-logoutBtn.addEventListener('click', async () => {
-  await supabase.auth.signOut();
-  form.hidden = false;
-  logoutBtn.hidden = true;
-  status.textContent = 'Kamu sudah logout.';
 $('productSearch').addEventListener('keydown', event => {
-  if (event.key === 'Enter') searchProducts();
+if (event.key === 'Enter') searchProducts();
 });
+
 // Pulihkan sesi jika pengguna sudah login sebelumnya.
 const { data: sessionData } = await supabase.auth.getSession();
+
 if (sessionData.session) {
-  const user = sessionData.session.user;
-  const { data: profile, error } = await supabase
-    .from('profiles')
-    .select('full_name, role')
-    .eq('id', user.id)
-    .maybeSingle();
-  if (!error && profile) {
-    currentUser = user;
-    currentProfile = profile;
-    $('loginCard').hidden = true;
-    $('dashboard').hidden = false;
-    $('welcome').textContent =
-      'Halo, ' + (profile.full_name || 'Pengguna') + '!';
-    $('userInfo').textContent =
-      'Email: ' + user.email + ' | Peran: ' + profile.role;
-    $('supervisorNotice').hidden =
-      profile.role !== 'supervisor';
-    await loadDashboard();
-  }
+const user = sessionData.session.user;
+
+const { data: profile, error } = await supabase
+.from('profiles')
+.select('full_name, role')
+.eq('id', user.id)
+.maybeSingle();
+
+if (!error && profile) {
+currentUser = user;
+currentProfile = profile;
+
+$('loginCard').hidden = true;
+$('dashboard').hidden = false;
+$('welcome').textContent =
+'Halo, ' + (profile.full_name || 'Pengguna') + '!';
+$('userInfo').textContent =
+'Email: ' + user.email + ' | Peran: ' + profile.role;
+$('supervisorNotice').hidden =
+profile.role !== 'supervisor';
+
+await loadDashboard();
+}
 }
 </script>
+
 </body>
 </html>
