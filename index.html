@@ -3,329 +3,486 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ID40 Stock Opname :: HEX-TECH HUD</title>
+<title>ID40 Stock Opname</title>
 <style>
-/* Reset & Base */
 * { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: #050509;
-  background-image: 
-    linear-gradient(0deg, rgba(0, 20, 40, 0.2) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 20, 40, 0.2) 1px, transparent 1px);
-  background-size: 20px 20px;
-  color: #c0eaeb;
-  overflow-x: hidden;
-}
-
-/* Header */
-header {
-  background: rgba(10, 15, 25, 0.9);
-  color: #00ffff;
-  padding: 15px 25px;
-  border-bottom: 2px solid #00ffff;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
-}
-header::after {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
-  background-size: 100% 4px;
-  z-index: 1;
-  pointer-events: none;
-}
-header h2 { 
-  margin: 0; 
-  font-size: 22px; 
-  text-transform: uppercase; 
-  letter-spacing: 2px;
-  font-weight: 900;
-  text-shadow: 0 0 10px #00ffff;
-}
-header p { margin: 0; font-size: 12px; opacity: 0.8; letter-spacing: 1px;}
-
-/* Main Container */
-main {
-  max-width: 950px;
-  margin: auto;
-  padding: 20px;
-  position: relative;
-}
-
-/* Hextech Panel (Card) */
-.card {
-  background: rgba(15, 20, 30, 0.8);
-  border: 1px solid #1a2a4a;
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: inset 0 0 10px rgba(0, 100, 255, 0.1), 0 5px 15px rgba(0,0,0,0.5);
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-.card:hover {
-  border-color: #007bff;
-  box-shadow: inset 0 0 15px rgba(0, 100, 255, 0.2), 0 5px 20px rgba(0,0,0,0.6);
-}
-
-h3 { 
-  margin-top: 0; 
-  color: #00ffff; 
-  text-transform: uppercase; 
-  letter-spacing: 1.5px; 
-  font-size: 18px;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.3);
-  padding-bottom: 8px;
-  margin-bottom: 15px;
-  text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
-}
-
-/* Form inputs */
-label { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #8da1b3; }
-input, select {
-  width: 100%;
-  padding: 12px;
-  margin-top: 6px;
-  margin-bottom: 14px;
-  background-color: rgba(5, 10, 20, 0.7);
-  border: 1px solid #1a2a4a;
-  border-radius: 0;
-  color: #00ffff;
-  font-size: 15px;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-input:focus, select:focus {
-  outline: none;
-  border-color: #00ffff;
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
-}
-input::placeholder { color: rgba(0, 255, 255, 0.4); }
-
-/* Buttons */
-button {
-  width: 100%;
-  padding: 13px;
-  margin-top: 10px;
-  border: 1px solid #00ffff;
-  background: transparent;
-  color: #00ffff;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 16px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  border-radius: 0;
-}
-button:hover {
-  background-color: #00ffff;
-  color: #050509;
-  box-shadow: 0 0 20px #00ffff, 0 0 40px rgba(0, 255, 255, 0.6);
-}
-
-button.secondary {
-  border-color: #ff00ff;
-  color: #ff00ff;
-}
-button.secondary:hover {
-  background-color: #ff00ff;
-  color: #050509;
-  box-shadow: 0 0 20px #ff00ff;
-}
-
-/* Grid & Stats */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 15px;
-}
-.stat {
-  background: rgba(10, 15, 25, 0.8);
-  padding: 18px;
-  border: 1px solid #1a2a4a;
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
-  position: relative;
-}
-.stat::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; width: 10px; height: 10px;
-  border-top: 2px solid #00ffff;
-  border-left: 2px solid #00ffff;
-}
-.stat strong {
-  display: block;
-  font-size: 28px;
-  margin-top: 10px;
-  color: #ffcc00;
-  font-family: 'Courier New', Courier, monospace;
-  text-shadow: 0 0 10px rgba(255, 204, 0, 0.7);
-}
-.small { font-size: 13px; color: #8da1b3; }
-
-/* Table */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-  background-color: rgba(10, 15, 25, 0.6);
-}
-th, td {
-  padding: 12px 10px;
-  border-bottom: 1px solid #1a2a4a;
-  text-align: left;
-  font-size: 14px;
-}
-th {
-  color: #00ffff;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 900;
-  background-color: rgba(26, 42, 74, 0.4);
-}
-tr:hover td { background-color: rgba(0, 255, 255, 0.05); color: white; }
-.table-wrap { overflow-x: auto; border: 1px solid #1a2a4a; }
-
-.product-img {
-  width: 48px;
-  height: 48px;
-  object-fit: cover;
-  border: 2px solid #1a2a4a;
-}
-tr:hover .product-img { border-color: #00ffff; }
-
-.no-img {
-  width: 48px; height: 48px;
-  border: 1px solid #1a2a4a;
-  color: #8da1b3;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 10px; font-weight: bold;
-}
-
+body { margin: 0; font-family: Arial, sans-serif; background: #f1f5f2; color: #24352b; }
+header { background: #176b45; color: white; padding: 20px; }
+header h2 { margin: 0 0 6px; }
+header p { margin: 0; font-size: 14px; }
+main { max-width: 850px; margin: auto; padding: 16px; }
+.card { background: white; border-radius: 14px; padding: 18px; margin-bottom: 16px; box-shadow: 0 3px 12px #0000000c; }
+h3 { margin-top: 0; }
+input, button, select { width: 100%; padding: 13px; margin-top: 10px; border: 1px solid #ccd5ce; border-radius: 8px; font-size: 16px; }
+button { border: none; background: #176b45; color: white; cursor: pointer; font-weight: bold; }
+button.secondary { background: #e5eee8; color: #176b45; }
+button.danger { background: #b42318; color: white; }
+button:disabled { opacity: .6; cursor: wait; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.stat { background: #edf7f0; padding: 16px; border-radius: 10px; }
+.stat strong { display: block; font-size: 25px; margin-top: 8px; overflow-wrap: anywhere; }
+.small { font-size: 13px; color: #65746a; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 10px 6px; border-bottom: 1px solid #e5e9e6; text-align: left; font-size: 14px; overflow-wrap: anywhere; }
+.table-wrap { overflow-x: auto; }
 [hidden] { display: none !important; }
-
-#loginStatus {
-  font-weight: bold;
-  margin-top: 15px;
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+.scanner-panel { margin-top: 12px; padding: 12px; background: #f7faf8; border: 1px solid #dce7df; border-radius: 10px; }
+#barcodeReader { width: 100%; max-width: 520px; margin: 12px auto; }
+#barcodeReader video { border-radius: 8px; }
+.scan-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+#scanStatus { min-height: 18px; }
+.image-preview { margin-top: 12px; padding: 12px; border: 1px dashed #b9c9bd; border-radius: 10px; background: #f8fbf9; }
+.image-preview img { display: block; max-width: 100%; max-height: 320px; object-fit: contain; margin: 10px auto 0; border-radius: 8px; }
+.image-preview .preview-empty { color: #65746a; font-size: 14px; text-align: center; padding: 18px 8px; }
+.product-image-card { display:flex; gap:14px; align-items:center; margin:12px 0; padding:14px; border:1px solid #d9e6dc; border-radius:12px; background:#f8fbf9; }
+.product-image-card img { width:140px; height:140px; object-fit:contain; background:white; border-radius:8px; }
+.product-image-card .product-image-info { min-width:0; overflow-wrap:anywhere; }
+.count-number { width:100px; min-width:80px; padding:8px; margin:0; }
+.session-select { margin:8px 0 12px; }
+@media (max-width:520px) { .product-image-card { align-items:flex-start; flex-direction:column; } .product-image-card img { width:100%; max-width:220px; height:180px; } }
+@media (max-width: 420px) {
+  main { padding: 10px; }
+  .card { padding: 14px; }
+  .grid { gap: 8px; }
+  .stat { padding: 12px; }
+  .scan-actions { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
 <header>
-  <div>
-    <h2>ID40 :: HEXTECH HUD</h2>
-    <p>Sistem Pemantauan Stok [Sesi: Aktif]</p>
-  </div>
-  <div class="small" style="text-align: right; text-transform: uppercase; letter-spacing: 1px;">
-    System Status: <span style="color: #00ff00; text-shadow: 0 0 5px #00ff00;">ONLINE</span><br>
-    Ver: 2.1.0
-  </div>
+  <h2>ID40 Stock Opname</h2>
+  <p>Aplikasi penghitungan stok toko</p>
 </header>
-
 <main>
-  <!-- Form Login -->
   <section id="loginCard" class="card">
-    <h3>> Akses Protokol</h3>
-    <p class="small">Inisialisasi otentikasi pengguna.</p>
+    <h3>Login</h3>
+    <p class="small">Masuk menggunakan akun yang terdaftar.</p>
     <form id="loginForm">
-      <label for="email">Identitas (Email)</label>
-      <input id="email" type="email" required autocomplete="username" placeholder="Masukkan email terdaftar...">
-      
-      <label for="password">Kode Akses (Kata Sandi)</label>
-      <input id="password" type="password" required autocomplete="current-password" placeholder="Masukkan kata sandi...">
-      
-      <button type="submit">Otorisasi</button>
+      <label for="email">Email</label>
+      <input id="email" type="email" required autocomplete="username">
+      <label for="password">Kata sandi</label>
+      <input id="password" type="password" required autocomplete="current-password">
+      <button type="submit">Login</button>
     </form>
     <p id="loginStatus" role="status"></p>
   </section>
 
-  <!-- Dashboard -->
   <section id="dashboard" hidden>
     <div class="card">
-      <h3 id="welcome">> Console Dashboard</h3>
+      <h3 id="welcome">Dashboard</h3>
       <p id="userInfo" class="small"></p>
-      <div class="grid" style="margin-top: 15px;">
-        <button id="refreshBtn">Sinkronisasi Data</button>
-        <button id="logoutBtn" class="secondary">Terminasi Sesi</button>
-      </div>
+      <button id="refreshBtn">Muat ulang data</button>
+      <button id="logoutBtn" class="secondary">Logout</button>
     </div>
 
     <div class="card">
-      <h3>> Matriks Ringkasan</h3>
+      <h3>Ringkasan</h3>
       <div class="grid">
-        <div class="stat">
-          <span class="small uppercase">Total Unit Produk</span>
-          <strong id="productTotal">—</strong>
-        </div>
-        <div class="stat">
-          <span class="small uppercase">Sesi SO Aktif</span>
-          <strong id="sessionTotal">—</strong>
-        </div>
+        <div class="stat">Jumlah produk<strong id="productTotal">—</strong></div>
+        <div class="stat">Sesi SO aktif<strong id="sessionTotal">—</strong></div>
       </div>
     </div>
 
     <div class="card">
-      <h3>> Database Barang</h3>
-      <input id="productSearch" type="search" placeholder="Cari barcode atau nama unit...">
-      <button id="searchBtn">Pindai Database</button>
-      <p id="productStatus" class="small" style="margin-top: 10px;"></p>
+      <h3>Data Barang</h3>
+      <label for="activeSessionSelect">Sesi Stock Opname aktif</label>
+      <select id="activeSessionSelect" class="session-select">
+        <option value="">Memuat sesi...</option>
+      </select>
+      <p class="small">Pilih sesi aktif sebelum menyimpan hasil hitungan.</p>
+      <label for="productSearch">Cari berdasarkan barcode atau nama barang</label>
+      <input id="productSearch" type="search" placeholder="Masukkan barcode atau nama barang">
+      <div class="scan-actions">
+        <button id="searchBtn" type="button">Cari Barang</button>
+        <button id="scanBtn" type="button">▦ Scan Barcode</button>
+      </div>
+
+      <div id="scannerPanel" class="scanner-panel" hidden>
+        <p><strong>Arahkan barcode produk ke kamera.</strong></p>
+        <p class="small">Pastikan izin kamera diberikan. Kamera membutuhkan HTTPS atau localhost.</p>
+        <div id="barcodeReader"></div>
+        <div class="scan-actions">
+          <button id="stopScanBtn" class="danger" type="button">Tutup Kamera</button>
+          <button id="retryScanBtn" class="secondary" type="button" hidden>Scan Lagi</button>
+        </div>
+        <p id="scanStatus" class="small" role="status" aria-live="polite"></p>
+      </div>
+
+      <p id="productStatus" class="small" role="status"></p>
+      <div id="productImageCard" class="product-image-card" hidden>
+        <img id="productImage" alt="Foto produk">
+        <div class="product-image-info">
+          <strong id="productImageName"></strong>
+          <p id="productImageBarcode" class="small"></p>
+          <p id="productImageStatus" class="small"></p>
+        </div>
+      </div>
       <div class="table-wrap">
         <table>
-          <thead>
-            <tr>
-              <th>Visual</th>
-              <th>Barcode</th>
-              <th>Nama Unit</th>
-              <th>Kategori</th>
-              <th>Harga Unit</th>
-              <th>Stok HUD</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Barcode</th><th>Nama Barang</th><th>Stok Sistem</th><th>Aksi</th></tr></thead>
           <tbody id="productRows"></tbody>
         </table>
       </div>
+    </div>
+
+    <div class="card">
+      <h3>Hasil Hitungan Fisik</h3>
+      <p class="small">Scan barcode berulang kali untuk menambah hitungan satu per scan, atau gunakan tombol +1 dari hasil pencarian. Kamu bisa mengubah jumlah fisik secara manual.</p>
+      <div class="grid">
+        <div class="stat">Barang dihitung<strong id="countedProductTotal">0</strong></div>
+        <div class="stat">Total stok fisik<strong id="countedUnitTotal">0</strong></div>
+      </div>
+      <div class="table-wrap" style="margin-top:12px">
+        <table>
+          <thead><tr><th>Barcode</th><th>Nama Barang</th><th>Stok Sistem</th><th>Stok Fisik</th><th>Aksi</th></tr></thead>
+          <tbody id="countedRows"></tbody>
+        </table>
+      </div>
+      <button id="saveOpnameBtn" type="button">Simpan Opname</button>
+      <p id="saveOpnameStatus" class="small" role="status"></p>
+    </div>
+
+    <div class="card">
+      <h3>Pratinjau Gambar dari Google Drive</h3>
+      <p class="small">Opsional: uji link gambar produk secara manual. Foto produk hasil scan otomatis dicari dari server gambar Miniso menggunakan pola barcode-nya.</p>
+      <label for="googleImageLink">Link gambar (Google Drive atau URL langsung)</label>
+      <input id="googleImageLink" type="url" placeholder="https://drive.google.com/file/d/FILE_ID/view">
+      <button id="previewImageBtn" type="button">Tampilkan Gambar</button>
+      <div id="googleImagePreview" class="image-preview" aria-live="polite">
+        <div class="preview-empty">Pratinjau gambar akan muncul di sini.</div>
+      </div>
+      <p class="small">Catatan: gambar Google Drive harus memiliki akses yang mengizinkan website melihatnya (misalnya “Siapa saja yang memiliki link”). Beberapa link Google tidak dapat ditampilkan langsung oleh browser.</p>
+    </div>
+
+    <div class="card">
+      <h3>Sesi Stock Opname</h3>
+      <p class="small">Daftar sesi yang dapat dilihat oleh akun ini.</p>
+      <div id="sessionList"></div>
+      <p id="sessionStatus" class="small"></p>
+    </div>
+
+    <div id="supervisorNotice" class="card" hidden>
+      <h3>Menu Supervisor</h3>
+      <p>Akun supervisor terdeteksi. Fitur pengelolaan produk, karyawan, sesi SO, dan ekspor akan ditambahkan pada tahap berikutnya.</p>
     </div>
   </section>
 </main>
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'https://esm.sh/html5-qrcode@2.3.8';
 
 const SUPABASE_URL = 'https://zfxewmzsvmzxrfqbkmre.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_thVM_xwRc90C7MYlpIxX2w__FiG5RA1';
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
 const $ = id => document.getElementById(id);
 
-function showMessage(id, message, isError = false) {
-  const el = $(id);
-  if (el) {
-    el.textContent = message;
-    el.style.color = isError ? '#ff3333' : '#00ffff';
+let currentUser = null;
+let currentProfile = null;
+let barcodeScanner = null;
+let scannerStarting = false;
+let scanHandled = false;
+let lastScannedBarcode = '';
+let lastScannedAt = 0;
+let countedItems = [];
+let activeSessions = [];
+
+function showMessage(id, message) {
+  $(id).textContent = message;
+}
+
+function getProductImageUrl(barcode) {
+  return `https://miniso-pic.oss-cn-shenzhen.aliyuncs.com/${encodeURIComponent(String(barcode).trim())}-1.jpg`;
+}
+
+function showProductImage(product) {
+  const card = $('productImageCard');
+  const img = $('productImage');
+  card.hidden = false;
+  $('productImageName').textContent = product.product_name || 'Nama barang tidak tersedia';
+  $('productImageBarcode').textContent = 'Barcode: ' + (product.barcode || '—');
+  $('productImageStatus').textContent = 'Memuat foto produk...';
+  img.onerror = () => {
+    card.hidden = true;
+  };
+  img.onload = () => {
+    $('productImageStatus').textContent = 'Foto produk berhasil dimuat.';
+  };
+  img.src = getProductImageUrl(product.barcode);
+}
+
+function playScanBeep() {
+  try {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+    const context = new AudioContextClass();
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    oscillator.type = 'sine';
+    oscillator.frequency.value = 880;
+    gain.gain.value = 0.08;
+    oscillator.connect(gain);
+    gain.connect(context.destination);
+    oscillator.start();
+    oscillator.stop(context.currentTime + 0.12);
+    oscillator.onended = () => context.close().catch(() => {});
+  } catch (error) {
+    console.warn('Bunyi scan tidak tersedia:', error);
+  }
+}
+
+function updateCountSummary() {
+  $('countedProductTotal').textContent = countedItems.length;
+  $('countedUnitTotal').textContent = countedItems.reduce((sum, item) => sum + Number(item.physical_stock || 0), 0);
+}
+
+function renderCountedItems() {
+  const body = $('countedRows');
+  body.replaceChildren();
+  countedItems.forEach((item, index) => {
+    const row = document.createElement('tr');
+    [item.barcode, item.product_name, item.system_stock ?? '—'].forEach(value => {
+      const cell = document.createElement('td');
+      cell.textContent = value == null ? '—' : String(value);
+      row.appendChild(cell);
+    });
+
+    const countCell = document.createElement('td');
+    const countInput = document.createElement('input');
+    countInput.className = 'count-number';
+    countInput.type = 'number';
+    countInput.min = '0';
+    countInput.step = '1';
+    countInput.value = String(item.physical_stock);
+    countInput.setAttribute('aria-label', 'Stok fisik ' + item.product_name);
+    countInput.addEventListener('change', () => {
+      const value = Number(countInput.value);
+      if (!Number.isInteger(value) || value < 0) {
+        countInput.value = String(item.physical_stock);
+        showMessage('saveOpnameStatus', 'Stok fisik harus berupa bilangan bulat nol atau lebih.');
+        return;
+      }
+      countedItems[index].physical_stock = value;
+      updateCountSummary();
+    });
+    countCell.appendChild(countInput);
+    row.appendChild(countCell);
+
+    const actionCell = document.createElement('td');
+    const removeButton = document.createElement('button');
+    removeButton.type = 'button';
+    removeButton.className = 'danger';
+    removeButton.textContent = 'Hapus';
+    removeButton.style.padding = '8px';
+    removeButton.addEventListener('click', () => {
+      countedItems = countedItems.filter((_, i) => i !== index);
+      renderCountedItems();
+    });
+    actionCell.appendChild(removeButton);
+    row.appendChild(actionCell);
+    body.appendChild(row);
+  });
+  updateCountSummary();
+}
+
+function addProductToCount(product, increment = 1) {
+  const barcode = String(product.barcode || '').trim();
+  if (!barcode) return;
+  const existing = countedItems.find(item => String(item.barcode) === barcode);
+  if (existing) {
+    existing.physical_stock = Number(existing.physical_stock || 0) + increment;
+  } else {
+    countedItems.push({
+      barcode,
+      product_name: product.product_name || '',
+      system_stock: product.system_stock ?? null,
+      physical_stock: increment
+    });
+  }
+  renderCountedItems();
+}
+
+// Mengubah beberapa format link Google Drive menjadi URL yang dapat dicoba sebagai gambar.
+function googleDriveImageUrl(rawUrl) {
+  const value = rawUrl.trim();
+  if (!value) throw new Error('Tempel link gambar terlebih dahulu.');
+
+  let url;
+  try {
+    url = new URL(value);
+  } catch {
+    throw new Error('Format link tidak valid. Tempel URL lengkap dari Google Drive.');
+  }
+
+  const host = url.hostname.toLowerCase();
+  if (!(host === 'drive.google.com' || host === 'docs.google.com' ||
+        host === 'drive.usercontent.google.com' || host === 'lh3.googleusercontent.com' ||
+        host === 'googleusercontent.com' || host.endsWith('.googleusercontent.com'))) {
+    // Izinkan URL gambar lain juga, misalnya link langsung dari layanan penyimpanan gambar.
+    if (!/^https?:$/.test(url.protocol)) {
+      throw new Error('Link harus menggunakan HTTPS atau HTTP.');
+    }
+    return value;
+  }
+
+  let fileId = '';
+  const fileMatch = url.pathname.match(/\/file\/d\/([^/]+)/);
+  if (fileMatch) fileId = fileMatch[1];
+  if (!fileId) fileId = url.searchParams.get('id') || '';
+  if (!fileId && url.pathname.match(/\/uc\//)) {
+    fileId = url.searchParams.get('id') || '';
+  }
+
+  // Link gambar Googleusercontent langsung dipakai apa adanya.
+  if (!fileId && host.includes('googleusercontent.com')) return value;
+  if (!fileId) {
+    throw new Error('ID file tidak ditemukan. Gunakan link Drive berbentuk drive.google.com/file/d/ID/view atau drive.google.com/open?id=ID.');
+  }
+
+  return 'https://drive.google.com/uc?export=view&id=' + encodeURIComponent(fileId);
+}
+
+function showGoogleImagePreview() {
+  const container = $('googleImagePreview');
+  container.replaceChildren();
+  let imageUrl;
+  try {
+    imageUrl = googleDriveImageUrl($('googleImageLink').value);
+  } catch (error) {
+    const message = document.createElement('div');
+    message.className = 'preview-empty';
+    message.textContent = error.message;
+    container.appendChild(message);
+    return;
+  }
+
+  const image = document.createElement('img');
+  image.alt = 'Pratinjau gambar produk dari link';
+  image.loading = 'lazy';
+  image.referrerPolicy = 'no-referrer';
+  image.src = imageUrl;
+  image.addEventListener('load', () => {
+    const caption = document.createElement('p');
+    caption.className = 'small';
+    caption.textContent = 'Gambar berhasil dimuat. URL gambar: ' + imageUrl;
+    container.appendChild(caption);
+  }, { once: true });
+  image.addEventListener('error', () => {
+    container.replaceChildren();
+    const message = document.createElement('div');
+    message.className = 'preview-empty';
+    message.textContent = 'Gambar tidak dapat dimuat. Pastikan file benar-benar gambar, akses Google Drive dibuka untuk siapa saja yang memiliki link, dan coba link berbagi lainnya.';
+    container.appendChild(message);
+  }, { once: true });
+  container.appendChild(image);
+}
+
+async function stopBarcodeScanner() {
+  const scanner = barcodeScanner;
+  if (!scanner) return;
+  try {
+    if (scanner.isScanning) await scanner.stop();
+  } catch (error) {
+    console.warn('Tidak dapat menghentikan scanner:', error);
+  }
+  try {
+    scanner.clear();
+  } catch (_) {}
+  if (barcodeScanner === scanner) barcodeScanner = null;
+  scannerStarting = false;
+}
+
+async function startBarcodeScanner() {
+  if (scannerStarting || (barcodeScanner && barcodeScanner.isScanning)) return;
+
+  $('scannerPanel').hidden = false;
+  $('scanBtn').disabled = true;
+  $('retryScanBtn').hidden = true;
+  showMessage('scanStatus', 'Meminta izin kamera...');
+  scanHandled = false;
+  scannerStarting = true;
+
+  try {
+    // Bersihkan instance sebelumnya agar elemen reader dapat dipakai ulang.
+    await stopBarcodeScanner();
+
+    const scanner = new Html5Qrcode('barcodeReader', {
+      formatsToSupport: [
+        Html5QrcodeSupportedFormats.EAN_13,
+        Html5QrcodeSupportedFormats.EAN_8,
+        Html5QrcodeSupportedFormats.UPC_A,
+        Html5QrcodeSupportedFormats.UPC_E,
+        Html5QrcodeSupportedFormats.CODE_128,
+        Html5QrcodeSupportedFormats.CODE_39,
+        Html5QrcodeSupportedFormats.ITF
+      ],
+      verbose: false
+    });
+    barcodeScanner = scanner;
+
+    await scanner.start(
+      { facingMode: 'environment' },
+      { fps: 10, qrbox: (width, height) => ({
+          width: Math.min(width * 0.9, 420),
+          height: Math.min(height * 0.35, 160)
+        })
+      },
+      async decodedText => {
+        const now = Date.now();
+        if (decodedText === lastScannedBarcode && now - lastScannedAt < 1800) return;
+        if (now - lastScannedAt < 350) return;
+        lastScannedBarcode = decodedText;
+        lastScannedAt = now;
+        $('productSearch').value = decodedText;
+        playScanBeep();
+        showMessage('scanStatus', 'Barcode terbaca: ' + decodedText + '. Kamera tetap aktif untuk scan berikutnya.');
+        await searchProducts(decodedText);
+        const { data, error } = await supabase
+          .from('products')
+          .select('barcode, product_name, system_stock')
+          .eq('barcode', decodedText)
+          .limit(1)
+          .maybeSingle();
+        if (!error && data) {
+          addProductToCount(data, 1);
+          showMessage('saveOpnameStatus', `${data.product_name || decodedText}: hitungan bertambah +1.`);
+        }
+      },
+      () => {
+        // Kegagalan membaca pada tiap frame adalah normal; jangan tampilkan spam pesan.
+      }
+    );
+
+    showMessage('scanStatus', 'Kamera aktif. Arahkan barcode ke area pemindaian.');
+  } catch (error) {
+    console.error('Scanner error:', error);
+    showMessage(
+      'scanStatus',
+      'Kamera gagal dibuka. Pastikan memakai HTTPS/localhost, izinkan akses kamera, dan tutup aplikasi lain yang memakai kamera.'
+    );
+    $('retryScanBtn').hidden = false;
+    await stopBarcodeScanner();
+  } finally {
+    scannerStarting = false;
+    $('scanBtn').disabled = false;
   }
 }
 
 async function loadDashboard() {
   showMessage('productStatus', 'Memuat data produk...');
-  
+  showMessage('sessionStatus', 'Memuat sesi SO...');
   const [productsResult, sessionsResult] = await Promise.all([
     supabase.from('products').select('id', { count: 'exact', head: true }),
-    supabase.from('so_sessions').select('id, session_name, status, created_at').order('created_at', { ascending: false }).limit(50)
+    supabase.from('so_sessions')
+      .select('id, session_name, status, created_at')
+      .order('created_at', { ascending: false })
+      .limit(50)
   ]);
-  
+
   if (productsResult.error) {
     $('productTotal').textContent = '!';
-    showMessage('productStatus', 'Gagal membaca produk: ' + productsResult.error.message, true);
+    showMessage('productStatus', 'Gagal membaca produk: ' + productsResult.error.message);
   } else {
     $('productTotal').textContent = productsResult.count ?? 0;
     showMessage('productStatus', 'Data produk siap.');
@@ -333,148 +490,251 @@ async function loadDashboard() {
 
   if (sessionsResult.error) {
     $('sessionTotal').textContent = '!';
+    showMessage('sessionStatus', 'Gagal membaca sesi: ' + sessionsResult.error.message);
   } else {
     const sessions = sessionsResult.data ?? [];
-    $('sessionTotal').textContent = sessions.filter(s => s.status === 'active').length;
+    activeSessions = sessions.filter(s => String(s.status || '').toLowerCase() === 'active');
+    $('sessionTotal').textContent = activeSessions.length;
+    renderSessions(sessions);
+    renderActiveSessionOptions();
+    showMessage('sessionStatus', 'Data sesi berhasil dimuat.');
   }
-  
-  // Otomatis tampilkan daftar barang awal
-  searchProducts();
 }
 
-async function searchProducts() {
-  const term = $('productSearch').value.trim();
+function renderSessions(sessions) {
+  const container = $('sessionList');
+  container.replaceChildren();
+  if (!sessions.length) {
+    container.textContent = 'Belum ada sesi SO.';
+    return;
+  }
+  sessions.forEach(session => {
+    const item = document.createElement('div');
+    item.className = 'stat';
+    item.style.marginBottom = '10px';
+    const title = document.createElement('strong');
+    title.style.fontSize = '16px';
+    title.textContent = session.session_name || 'Sesi tanpa nama';
+    const status = document.createElement('p');
+    status.textContent = 'Status: ' + session.status;
+    item.append(title, status);
+    container.appendChild(item);
+  });
+}
+
+function renderActiveSessionOptions() {
+  const select = $('activeSessionSelect');
+  const previous = select.value;
+  select.replaceChildren();
+  const placeholder = document.createElement('option');
+  placeholder.value = '';
+  placeholder.textContent = activeSessions.length ? 'Pilih sesi SO aktif' : 'Tidak ada sesi SO aktif';
+  select.appendChild(placeholder);
+  activeSessions.forEach(session => {
+    const option = document.createElement('option');
+    option.value = session.id;
+    option.textContent = session.session_name || ('Sesi ' + session.id);
+    select.appendChild(option);
+  });
+  if (activeSessions.some(session => String(session.id) === previous)) select.value = previous;
+  else if (activeSessions.length === 1) select.value = String(activeSessions[0].id);
+}
+
+async function saveOpname() {
+  const sessionId = $('activeSessionSelect').value;
+  if (!sessionId) {
+    showMessage('saveOpnameStatus', 'Pilih sesi SO aktif terlebih dahulu. Jika belum ada, minta supervisor membuat sesi.');
+    return;
+  }
+  if (!countedItems.length) {
+    showMessage('saveOpnameStatus', 'Belum ada barang dalam hasil hitungan.');
+    return;
+  }
+
+  const button = $('saveOpnameBtn');
+  button.disabled = true;
+  showMessage('saveOpnameStatus', 'Menyimpan hasil opname...');
+  try {
+    const payload = countedItems.map(item => ({
+      session_id: sessionId,
+      barcode: item.barcode,
+      product_name: item.product_name,
+      system_stock: item.system_stock,
+      physical_stock: item.physical_stock,
+      counted_by: currentUser.id
+    }));
+    const { error } = await supabase.from('so_items').upsert(payload, {
+      onConflict: 'session_id,barcode'
+    });
+    if (error) throw error;
+    showMessage('saveOpnameStatus', `Berhasil menyimpan ${countedItems.length} barang ke sesi SO.`);
+  } catch (error) {
+    console.error('Save opname error:', error);
+    showMessage('saveOpnameStatus', 'Gagal menyimpan: ' + error.message + '. Pastikan tabel so_items dan kebijakan akses sudah dibuat di Supabase (lihat file SQL pendamping).');
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function searchProducts(scannedBarcode = '') {
+  const term = (scannedBarcode || $('productSearch').value).trim();
   const rows = $('productRows');
   rows.replaceChildren();
-  
+
+  if (!term) {
+    showMessage('productStatus', 'Masukkan nama barang atau barcode terlebih dahulu.');
+    return;
+  }
+
+  showMessage('productStatus', 'Mencari barang...');
   let query = supabase
     .from('products')
-    .select('barcode, product_name, category, price, system_stock, image_url')
+    .select('barcode, product_name, system_stock')
     .order('product_name')
     .limit(100);
-    
-  if (term) {
+
+  // Hasil scan dicari sebagai barcode persis agar tidak salah cocok dengan nama barang.
+  if (scannedBarcode) {
+    query = supabase.from('products')
+      .select('barcode, product_name, system_stock')
+      .eq('barcode', scannedBarcode)
+      .limit(100);
+  } else {
     const safeTerm = term.replace(/[,%()]/g, '');
     query = query.or(`barcode.eq.${safeTerm},product_name.ilike.%${safeTerm}%`);
   }
-  
+
   const { data, error } = await query;
   if (error) {
-    showMessage('productStatus', 'Gagal mencari barang: ' + error.message, true);
+    showMessage('productStatus', 'Gagal mencari barang: ' + error.message);
     return;
   }
+
   if (!data || !data.length) {
-    showMessage('productStatus', 'Barang tidak ditemukan.');
+    $('productImageCard').hidden = true;
+    showMessage('productStatus', scannedBarcode
+      ? `Barcode ${scannedBarcode} tidak ditemukan di database produk.`
+      : 'Barang tidak ditemukan.');
     return;
   }
-  
+
+  if (data.length === 1) showProductImage(data[0]);
   data.forEach(product => {
     const row = document.createElement('tr');
-    
-    // 1. Gambar Produk
-    const imgCell = document.createElement('td');
-    const imageUrl = product.image_url; 
-    if (imageUrl) {
-      const img = document.createElement('img');
-      img.src = imageUrl;
-      img.alt = product.product_name || 'Produk';
-      img.className = 'product-img';
-      imgCell.appendChild(img);
-    } else {
-      imgCell.innerHTML = '<div class="no-img">No Img</div>';
-    }
-    row.appendChild(imgCell);
-
-    // Format harga
-    const formattedPrice = product.price != null 
-      ? 'Rp ' + Number(product.price).toLocaleString('id-ID') 
-      : '—';
-
-    // Data teks
-    const textValues = [
-      product.barcode, 
-      product.product_name, 
-      product.category, 
-      formattedPrice, 
-      product.system_stock
-    ];
-
-    textValues.forEach(value => {
+    [product.barcode, product.product_name, product.system_stock].forEach(value => {
       const cell = document.createElement('td');
       cell.textContent = value == null ? '—' : String(value);
       row.appendChild(cell);
     });
-
+    const actionCell = document.createElement('td');
+    const addButton = document.createElement('button');
+    addButton.type = 'button';
+    addButton.textContent = '+1 Hitung';
+    addButton.style.padding = '8px';
+    addButton.addEventListener('click', () => {
+      addProductToCount(product, 1);
+      showMessage('saveOpnameStatus', `${product.product_name || product.barcode} ditambahkan +1.`);
+    });
+    actionCell.appendChild(addButton);
+    row.appendChild(actionCell);
     rows.appendChild(row);
   });
-  
   showMessage('productStatus', `Menampilkan ${data.length} barang (maksimal 100).`);
 }
 
 async function login(event) {
   event.preventDefault();
-  showMessage('loginStatus', 'Memeriksa otorisasi...');
-  
+  showMessage('loginStatus', 'Memeriksa akun...');
   const email = $('email').value.trim();
   const password = $('password').value;
-  
-  // Attempt login
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  
+
   if (error) {
-    console.error('Login Error:', error);
-    showMessage('loginStatus', 'Login gagal: ' + error.message, true);
+    showMessage('loginStatus', 'Login gagal: ' + error.message);
     return;
   }
-  
-  // Get User Profile
+
   const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('full_name, role')
-    .eq('id', data.user.id)
-    .maybeSingle();
-    
+    .from('profiles').select('full_name, role').eq('id', data.user.id).maybeSingle();
+
   if (profileError || !profile) {
-    console.error('Profile Error:', profileError);
-    showMessage('loginStatus', 'Login sukses di Auth, tapi Profil di database tidak ditemukan!', true);
+    await supabase.auth.signOut();
+    showMessage('loginStatus', 'Profil tidak dapat diakses. Hubungi supervisor.');
     return;
   }
-  
+
+  currentUser = data.user;
+  currentProfile = profile;
   $('loginCard').hidden = true;
   $('dashboard').hidden = false;
-  $('welcome').textContent = '> Akses Diterima: ' + (profile.full_name \vert{}\vert{} 'Operator') + '!';$('userInfo').textContent = 'ID: ' + data.user.email + ' | Role: ' + profile.role;
-  
+  $('welcome').textContent = 'Halo, ' + (profile.full_name || 'Pengguna') + '!';
+  $('userInfo').textContent = 'Email: ' + data.user.email + ' | Peran: ' + profile.role;
+  $('supervisorNotice').hidden = profile.role !== 'supervisor';
   await loadDashboard();
 }
 
 async function logout() {
-  await supabase.auth.signOut();
+  await stopBarcodeScanner();
+  $('scannerPanel').hidden = true;
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    alert('Logout gagal: ' + error.message);
+    return;
+  }
+  currentUser = null;
+  currentProfile = null;
   $('dashboard').hidden = true;
   $('loginCard').hidden = false;
   $('loginForm').reset();
-  showMessage('loginStatus', 'Sesi terminasi.');
+  showMessage('loginStatus', 'Kamu sudah logout.');
 }
 
 $('loginForm').addEventListener('submit', login);
-$('logoutBtn').addEventListener('click', logout);$('refreshBtn').addEventListener('click', loadDashboard);
-$('searchBtn').addEventListener('click', searchProducts);$('productSearch').addEventListener('keydown', event => {
-  if (event.key === 'Enter') searchProducts();
+$('logoutBtn').addEventListener('click', logout);
+$('refreshBtn').addEventListener('click', loadDashboard);
+$('searchBtn').addEventListener('click', () => searchProducts());
+$('productSearch').addEventListener('keydown', event => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    searchProducts();
+  }
+});
+$('scanBtn').addEventListener('click', startBarcodeScanner);
+$('previewImageBtn').addEventListener('click', showGoogleImagePreview);
+$('googleImageLink').addEventListener('keydown', event => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    showGoogleImagePreview();
+  }
+});
+$('stopScanBtn').addEventListener('click', async () => {
+  await stopBarcodeScanner();
+  $('scannerPanel').hidden = true;
+  showMessage('scanStatus', 'Kamera ditutup.');
+});
+$('retryScanBtn').addEventListener('click', startBarcodeScanner);
+$('saveOpnameBtn').addEventListener('click', saveOpname);
+
+// Tutup kamera ketika halaman ditinggalkan.
+window.addEventListener('pagehide', () => {
+  if (barcodeScanner?.isScanning) barcodeScanner.stop().catch(() => {});
 });
 
-// Auto login jika sesi masih aktif
+// Pulihkan sesi jika pengguna sudah login sebelumnya.
 const { data: sessionData } = await supabase.auth.getSession();
-if (sessionData && sessionData.session) {
+if (sessionData.session) {
   const user = sessionData.session.user;
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('full_name, role')
-    .eq('id', user.id)
-    .maybeSingle();
-    
-  if (profile) {
+  const { data: profile, error } = await supabase
+    .from('profiles').select('full_name, role').eq('id', user.id).maybeSingle();
+
+  if (!error && profile) {
+    currentUser = user;
+    currentProfile = profile;
     $('loginCard').hidden = true;
     $('dashboard').hidden = false;
-    $('welcome').textContent = '> Akses Diterima: ' + (profile.full_name \vert{}\vert{} 'Operator') + '!';$('userInfo').textContent = 'ID: ' + user.email + ' | Role: ' + profile.role;
+    $('welcome').textContent = 'Halo, ' + (profile.full_name || 'Pengguna') + '!';
+    $('userInfo').textContent = 'Email: ' + user.email + ' | Peran: ' + profile.role;
+    $('supervisorNotice').hidden = profile.role !== 'supervisor';
     await loadDashboard();
   }
 }
