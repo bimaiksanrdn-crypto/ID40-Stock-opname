@@ -120,7 +120,17 @@ th, td { padding: 10px 6px; border-bottom: 1px solid #e5e9e6; text-align: left; 
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Barcode</th><th>Nama Barang</th><th>Stok Sistem</th><th>Aksi</th></tr></thead>
+          <thead>
+  <tr>
+    <th>Foto</th>
+    <th>Barcode</th>
+    <th>Nama Barang</th>
+    <th>Kategori</th>
+    <th>Harga</th>
+    <th>Stok Sistem</th>
+    <th>Aksi</th>
+  </tr>
+</thead>
           <tbody id="productRows"></tbody>
         </table>
       </div>
@@ -191,7 +201,20 @@ let activeSessions = [];
 function showMessage(id, message) {
   $(id).textContent = message;
 }
+function formatRupiah(value) {
+  if (value === null || value === undefined || value === '') {
+    return '—';
+  }
 
+  const number = Number(value);
+  if (!Number.isFinite(number)) return '—';
+
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    maximumFractionDigits: 0
+  }).format(number);
+}
 function getProductImageUrl(barcode) {
   return `https://miniso-pic.oss-cn-shenzhen.aliyuncs.com/${encodeURIComponent(String(barcode).trim())}-1.jpg`;
 }
@@ -455,7 +478,7 @@ async function startBarcodeScanner() {
         await searchProducts(decodedText);
         const { data, error } = await supabase
           .from('products')
-          .select('id, barcode, product_name, system_stock, image_url')
+          .select('id, barcode, product_name, category, price, system_stock, image_url')
           .eq('barcode', decodedText)
           .limit(1)
           .maybeSingle();
@@ -641,7 +664,17 @@ async function searchProducts(scannedBarcode = '') {
   if (data.length === 1) showProductImage(data[0]);
   data.forEach(product => {
     const row = document.createElement('tr');
-    [product.barcode, product.product_name, product.system_stock].forEach(value => {
+    [
+  product.barcode,
+  product.product_name,
+  product.category || '—',
+  formatRupiah(product.price),
+  product.system_stock ?? '—'
+].forEach(value => {
+  const cell = document.createElement('td');
+  cell.textContent = value == null ? '—' : String(value);
+  row.appendChild(cell);
+});
       const cell = document.createElement('td');
       cell.textContent = value == null ? '—' : String(value);
       row.appendChild(cell);
