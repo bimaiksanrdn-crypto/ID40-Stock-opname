@@ -9,22 +9,20 @@
 * { box-sizing: border-box; }
 body {
   margin: 0;
-  /* Font futuristik/kaku ala UI game */
   font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  /* Latar belakang gelap pekat dengan pola grid Cyberpunk */
   background-color: #050509;
   background-image: 
     linear-gradient(0deg, rgba(0, 20, 40, 0.2) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 20, 40, 0.2) 1px, transparent 1px);
   background-size: 20px 20px;
-  color: #c0eaeb; /* Cyan pucat */
+  color: #c0eaeb;
   overflow-x: hidden;
 }
 
-/* Header - Diubah total jadi HUD top bar */
+/* Header */
 header {
   background: rgba(10, 15, 25, 0.9);
-  color: #00ffff; /* Pure Cyan neon */
+  color: #00ffff;
   padding: 15px 25px;
   border-bottom: 2px solid #00ffff;
   box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
@@ -33,7 +31,6 @@ header {
   align-items: center;
   position: relative;
 }
-/* Efek Scanline pada Header */
 header::after {
   content: "";
   position: absolute;
@@ -61,10 +58,9 @@ main {
   position: relative;
 }
 
-/* Kotak (Card) - Menjadi Hextech Panel */
+/* Hextech Panel (Card) */
 .card {
   background: rgba(15, 20, 30, 0.8);
-  /* Sudut tajam/terpotong diagonal ala LoL UI */
   border: 1px solid #1a2a4a;
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
   padding: 20px;
@@ -73,7 +69,7 @@ main {
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 .card:hover {
-  border-color: #007bff; /* Electric Blue saat hover */
+  border-color: #007bff;
   box-shadow: inset 0 0 15px rgba(0, 100, 255, 0.2), 0 5px 20px rgba(0,0,0,0.6);
 }
 
@@ -89,14 +85,16 @@ h3 {
   text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
 }
 
-/* Input & Select - HUD style */
+/* Form inputs */
+label { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #8da1b3; }
 input, select {
   width: 100%;
   padding: 12px;
-  margin-top: 8px;
+  margin-top: 6px;
+  margin-bottom: 14px;
   background-color: rgba(5, 10, 20, 0.7);
   border: 1px solid #1a2a4a;
-  border-radius: 0; /* Tajam */
+  border-radius: 0;
   color: #00ffff;
   font-size: 15px;
   transition: border-color 0.3s, box-shadow 0.3s;
@@ -108,11 +106,11 @@ input:focus, select:focus {
 }
 input::placeholder { color: rgba(0, 255, 255, 0.4); }
 
-/* Buttons - Efek Neon Nyala ala LoL Hextech */
+/* Buttons */
 button {
   width: 100%;
   padding: 13px;
-  margin-top: 15px;
+  margin-top: 10px;
   border: 1px solid #00ffff;
   background: transparent;
   color: #00ffff;
@@ -131,38 +129,18 @@ button:hover {
   color: #050509;
   box-shadow: 0 0 20px #00ffff, 0 0 40px rgba(0, 255, 255, 0.6);
 }
-/* Efek kilauan saat di-hover */
-button::after {
-  content: '';
-  position: absolute;
-  top: -50%; left: -50%; width: 200%; height: 200%;
-  background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
-  transform: rotate(45deg);
-  transition: all 0.5s;
-  opacity: 0;
-}
-button:hover::after { opacity: 1; left: 100%; }
 
 button.secondary {
-  border-color: #ff00ff; /* Magenta Neon (Zaun) */
+  border-color: #ff00ff;
   color: #ff00ff;
 }
 button.secondary:hover {
   background-color: #ff00ff;
   color: #050509;
-  box-shadow: 0 0 20px #ff00ff, 0 0 40px rgba(255, 0, 255, 0.6);
-}
-button.danger { 
-  border-color: #ff3333; 
-  color: #ff3333;
-}
-button.danger:hover {
-  background-color: #ff3333;
-  color: white;
-  box-shadow: 0 0 20px #ff3333;
+  box-shadow: 0 0 20px #ff00ff;
 }
 
-/* Grid Stats */
+/* Grid & Stats */
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -175,7 +153,6 @@ button.danger:hover {
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
   position: relative;
 }
-/* Indikator sudut neon kecil */
 .stat::before {
   content: '';
   position: absolute;
@@ -187,17 +164,13 @@ button.danger:hover {
   display: block;
   font-size: 28px;
   margin-top: 10px;
-  color: #ffcc00; /* Kuning Emas Aktif */
-  font-family: 'Courier New', Courier, monospace; /* Font data kaku */
+  color: #ffcc00;
+  font-family: 'Courier New', Courier, monospace;
   text-shadow: 0 0 10px rgba(255, 204, 0, 0.7);
-  overflow-wrap: anywhere;
 }
-.small {
-  font-size: 13px;
-  color: #8da1b3; /* Cyan abu-abu */
-}
+.small { font-size: 13px; color: #8da1b3; }
 
-/* Tabel - Cyberpunk HUD style */
+/* Table */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -209,8 +182,6 @@ th, td {
   border-bottom: 1px solid #1a2a4a;
   text-align: left;
   font-size: 14px;
-  overflow-wrap: anywhere;
-  vertical-align: middle;
 }
 th {
   color: #00ffff;
@@ -219,22 +190,14 @@ th {
   font-weight: 900;
   background-color: rgba(26, 42, 74, 0.4);
 }
-/* Efek highlight baris saat hover */
-tr:hover td {
-  background-color: rgba(0, 255, 255, 0.05);
-  color: white;
-}
-
+tr:hover td { background-color: rgba(0, 255, 255, 0.05); color: white; }
 .table-wrap { overflow-x: auto; border: 1px solid #1a2a4a; }
 
-/* Gambar Produk */
 .product-img {
   width: 48px;
   height: 48px;
   object-fit: cover;
-  border-radius: 0; /* Tajam */
   border: 2px solid #1a2a4a;
-  transition: border-color 0.3s;
 }
 tr:hover .product-img { border-color: #00ffff; }
 
@@ -243,27 +206,17 @@ tr:hover .product-img { border-color: #00ffff; }
   border: 1px solid #1a2a4a;
   color: #8da1b3;
   display: flex; align-items: center; justify-content: center;
-  font-size: 10px; font-weight: bold; text-transform: uppercase;
+  font-size: 10px; font-weight: bold;
 }
 
 [hidden] { display: none !important; }
 
-/* Login Status text */
 #loginStatus {
   font-weight: bold;
   margin-top: 15px;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 1px;
-}
-
-/* Media Queries */
-@media (max-width: 420px) {
-  main { padding: 12px; }
-  header h2 { font-size: 18px; }
-  .grid { gap: 10px; }
-  .stat strong { font-size: 24px; }
-  th, td { padding: 8px 5px; font-size: 12px; }
 }
 </style>
 </head>
@@ -273,25 +226,30 @@ tr:hover .product-img { border-color: #00ffff; }
     <h2>ID40 :: HEXTECH HUD</h2>
     <p>Sistem Pemantauan Stok [Sesi: Aktif]</p>
   </div>
-  <!-- Tambahan dekorasi kanan ala HUD game -->
   <div class="small" style="text-align: right; text-transform: uppercase; letter-spacing: 1px;">
     System Status: <span style="color: #00ff00; text-shadow: 0 0 5px #00ff00;">ONLINE</span><br>
     Ver: 2.1.0
   </div>
 </header>
+
 <main>
+  <!-- Form Login -->
   <section id="loginCard" class="card">
     <h3>> Akses Protokol</h3>
     <p class="small">Inisialisasi otentikasi pengguna.</p>
     <form id="loginForm">
       <label for="email">Identitas (Email)</label>
-      <input id="email" type="email" required autocomplete="username" placeholder="user@id40.io">
-      <label for="password">Kode Akses (Kata sandi)</label>
-      <input id="password" type="password" required autocomplete="current-password" placeholder="******">
+      <input id="email" type="email" required autocomplete="username" placeholder="Masukkan email terdaftar...">
+      
+      <label for="password">Kode Akses (Kata Sandi)</label>
+      <input id="password" type="password" required autocomplete="current-password" placeholder="Masukkan kata sandi...">
+      
       <button type="submit">Otorisasi</button>
     </form>
     <p id="loginStatus" role="status"></p>
   </section>
+
+  <!-- Dashboard -->
   <section id="dashboard" hidden>
     <div class="card">
       <h3 id="welcome">> Console Dashboard</h3>
@@ -301,6 +259,7 @@ tr:hover .product-img { border-color: #00ffff; }
         <button id="logoutBtn" class="secondary">Terminasi Sesi</button>
       </div>
     </div>
+
     <div class="card">
       <h3>> Matriks Ringkasan</h3>
       <div class="grid">
@@ -314,11 +273,12 @@ tr:hover .product-img { border-color: #00ffff; }
         </div>
       </div>
     </div>
+
     <div class="card">
       <h3>> Database Barang</h3>
       <input id="productSearch" type="search" placeholder="Cari barcode atau nama unit...">
       <button id="searchBtn">Pindai Database</button>
-      <p id="productStatus" class="small"></p>
+      <p id="productStatus" class="small" style="margin-top: 10px;"></p>
       <div class="table-wrap">
         <table>
           <thead>
@@ -335,40 +295,37 @@ tr:hover .product-img { border-color: #00ffff; }
         </table>
       </div>
     </div>
-    <!-- Bagian lain tetap, hanya CSS yang berubah -->
   </section>
 </main>
+
 <script type="module">
-// ... KODE JAVASCRIPT ANDA TETAP SAMA, TIDAK ADA PERUBAHAN ...
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
 const SUPABASE_URL = 'https://zfxewmzsvmzxrfqbkmre.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_thVM_xwRc90C7MYlpIxX2w__FiG5RA1';
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-const $ = id => document.getElementById(id);
-let currentUser = null;
-let currentProfile = null;
 
-function showMessage(id, message) {
-  $(id).textContent = message;
+const $ = id => document.getElementById(id);
+
+function showMessage(id, message, isError = false) {
+  const el = $(id);
+  if (el) {
+    el.textContent = message;
+    el.style.color = isError ? '#ff3333' : '#00ffff';
+  }
 }
 
 async function loadDashboard() {
   showMessage('productStatus', 'Memuat data produk...');
-  showMessage('sessionStatus', 'Memuat sesi SO...');
+  
   const [productsResult, sessionsResult] = await Promise.all([
-    supabase
-      .from('products')
-      .select('id', { count: 'exact', head: true }),
-    supabase
-      .from('so_sessions')
-      .select('id, session_name, status, created_at')
-      .order('created_at', { ascending: false })
-      .limit(50)
+    supabase.from('products').select('id', { count: 'exact', head: true }),
+    supabase.from('so_sessions').select('id, session_name, status, created_at').order('created_at', { ascending: false }).limit(50)
   ]);
   
   if (productsResult.error) {
     $('productTotal').textContent = '!';
-    showMessage('productStatus', 'Gagal membaca produk: ' + productsResult.error.message);
+    showMessage('productStatus', 'Gagal membaca produk: ' + productsResult.error.message, true);
   } else {
     $('productTotal').textContent = productsResult.count ?? 0;
     showMessage('productStatus', 'Data produk siap.');
@@ -376,34 +333,13 @@ async function loadDashboard() {
 
   if (sessionsResult.error) {
     $('sessionTotal').textContent = '!';
-    showMessage('sessionStatus', 'Gagal membaca sesi: ' + sessionsResult.error.message);
   } else {
     const sessions = sessionsResult.data ?? [];
     $('sessionTotal').textContent = sessions.filter(s => s.status === 'active').length;
-    renderSessions(sessions);
-    showMessage('sessionStatus', 'Data sesi berhasil dimuat.');
   }
-}
-
-function renderSessions(sessions) {
-  const container = $('sessionList');
-  container.replaceChildren();
-  if (!sessions.length) {
-    container.textContent = 'Belum ada sesi SO.';
-    return;
-  }
-  sessions.forEach(session => {
-    const item = document.createElement('div');
-    item.className = 'stat';
-    item.style.marginBottom = '10px';
-    const title = document.createElement('strong');
-    title.style.fontSize = '16px';
-    title.textContent = session.session_name || 'Sesi tanpa nama';
-    const status = document.createElement('p');
-    status.textContent = 'Status: ' + session.status;
-    item.append(title, status);
-    container.appendChild(item);
-  });
+  
+  // Otomatis tampilkan daftar barang awal
+  searchProducts();
 }
 
 async function searchProducts() {
@@ -411,7 +347,6 @@ async function searchProducts() {
   const rows = $('productRows');
   rows.replaceChildren();
   
-  // Mengambil kolom image_url (atau image_path) dari tabel products
   let query = supabase
     .from('products')
     .select('barcode, product_name, category, price, system_stock, image_url')
@@ -425,10 +360,10 @@ async function searchProducts() {
   
   const { data, error } = await query;
   if (error) {
-    showMessage('productStatus', 'Gagal mencari barang: ' + error.message);
+    showMessage('productStatus', 'Gagal mencari barang: ' + error.message, true);
     return;
   }
-  if (!data.length) {
+  if (!data || !data.length) {
     showMessage('productStatus', 'Barang tidak ditemukan.');
     return;
   }
@@ -436,9 +371,9 @@ async function searchProducts() {
   data.forEach(product => {
     const row = document.createElement('tr');
     
-    // 1. Kolom Gambar
+    // 1. Gambar Produk
     const imgCell = document.createElement('td');
-    const imageUrl = product.image_url || product.image_path; 
+    const imageUrl = product.image_url; 
     if (imageUrl) {
       const img = document.createElement('img');
       img.src = imageUrl;
@@ -455,7 +390,7 @@ async function searchProducts() {
       ? 'Rp ' + Number(product.price).toLocaleString('id-ID') 
       : '—';
 
-    // 2-6. Kolom Text Data
+    // Data teks
     const textValues = [
       product.barcode, 
       product.product_name, 
@@ -476,17 +411,23 @@ async function searchProducts() {
   showMessage('productStatus', `Menampilkan ${data.length} barang (maksimal 100).`);
 }
 
-// ... SISA JAVASCRIPT ANDA TETAP SAMA ...
 async function login(event) {
   event.preventDefault();
   showMessage('loginStatus', 'Memeriksa otorisasi...');
+  
   const email = $('email').value.trim();
   const password = $('password').value;
+  
+  // Attempt login
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  
   if (error) {
-    showMessage('loginStatus', 'Login gagal: ' + error.message);
+    console.error('Login Error:', error);
+    showMessage('loginStatus', 'Login gagal: ' + error.message, true);
     return;
   }
+  
+  // Get User Profile
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('full_name, role')
@@ -494,27 +435,20 @@ async function login(event) {
     .maybeSingle();
     
   if (profileError || !profile) {
-    await supabase.auth.signOut();
-    showMessage('loginStatus', 'Profil tidak dapat diakses. Hubungi supervisor.');
+    console.error('Profile Error:', profileError);
+    showMessage('loginStatus', 'Login sukses di Auth, tapi Profil di database tidak ditemukan!', true);
     return;
   }
-  currentUser = data.user;
-  currentProfile = profile;
+  
   $('loginCard').hidden = true;
   $('dashboard').hidden = false;
-  $('welcome').textContent = '> Akses Diterima: ' + (profile.full_name \vert{}\vert{} 'Operator') + '!';$('userInfo').textContent = 'ID: ' + data.user.email + ' | Otoritas: ' + profile.role;
-  $('supervisorNotice').hidden = profile.role !== 'supervisor';
+  $('welcome').textContent = '> Akses Diterima: ' + (profile.full_name \vert{}\vert{} 'Operator') + '!';$('userInfo').textContent = 'ID: ' + data.user.email + ' | Role: ' + profile.role;
+  
   await loadDashboard();
 }
 
 async function logout() {
-  const { error } = await supabase.auth.signOut();
-  if (error) {
-    alert('Logout gagal: ' + error.message);
-    return;
-  }
-  currentUser = null;
-  currentProfile = null;
+  await supabase.auth.signOut();
   $('dashboard').hidden = true;
   $('loginCard').hidden = false;
   $('loginForm').reset();
@@ -527,21 +461,20 @@ $('searchBtn').addEventListener('click', searchProducts);$('productSearch').addE
   if (event.key === 'Enter') searchProducts();
 });
 
+// Auto login jika sesi masih aktif
 const { data: sessionData } = await supabase.auth.getSession();
-if (sessionData.session) {
+if (sessionData && sessionData.session) {
   const user = sessionData.session.user;
-  const { data: profile, error } = await supabase
+  const { data: profile } = await supabase
     .from('profiles')
     .select('full_name, role')
     .eq('id', user.id)
     .maybeSingle();
-  if (!error && profile) {
-    currentUser = user;
-    currentProfile = profile;
+    
+  if (profile) {
     $('loginCard').hidden = true;
     $('dashboard').hidden = false;
-    $('welcome').textContent = '> Akses Diterima: ' + (profile.full_name \vert{}\vert{} 'Operator') + '!';$('userInfo').textContent = 'ID: ' + user.email + ' | Otoritas: ' + profile.role;
-    $('supervisorNotice').hidden = profile.role !== 'supervisor';
+    $('welcome').textContent = '> Akses Diterima: ' + (profile.full_name \vert{}\vert{} 'Operator') + '!';$('userInfo').textContent = 'ID: ' + user.email + ' | Role: ' + profile.role;
     await loadDashboard();
   }
 }
