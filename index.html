@@ -633,6 +633,58 @@ function appendHistoryProductCell(row, product) {
   img.className = 'product-thumb';
   img.alt = '';
   img.loading = 'lazy';
+thumb.style.cursor = 'zoom-in';
+thumb.title = 'Klik untuk memperbesar foto';
+
+thumb.addEventListener('click', () => {
+  if (!thumb.src || !thumb.isConnected) return;
+
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: rgba(0,0,0,.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  `;
+
+  const bigImg = document.createElement('img');
+  bigImg.src = thumb.src;
+  bigImg.alt = thumb.alt;
+  bigImg.style.cssText = `
+    max-width: 95vw;
+    max-height: 85vh;
+    object-fit: contain;
+    background: white;
+    border-radius: 12px;
+    padding: 5px;
+  `;
+
+  const close = document.createElement('button');
+  close.textContent = '×';
+  close.style.cssText = `
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 48px;
+    height: 48px;
+    margin: 0;
+    font-size: 32px;
+    background: #302050;
+  `;
+
+  close.onclick = () => overlay.remove();
+  overlay.onclick = e => {
+    if (e.target === overlay) overlay.remove();
+  };
+
+  overlay.append(bigImg, close);
+  document.body.appendChild(overlay);
+});
+  
   const savedUrl = String(product?.image_url || '').trim();
   img.src = savedUrl || getProductImageUrl(product?.barcode || '');
   img.onerror = () => {
