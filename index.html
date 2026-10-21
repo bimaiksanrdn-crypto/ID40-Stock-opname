@@ -881,46 +881,99 @@ thumb.addEventListener('click', () => {
     position: fixed;
     inset: 0;
     z-index: 99999;
-    background: rgba(0,0,0,.92);
+    background: rgba(0,0,0,.94);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 16px;
+    overflow-y: auto;
+  `;
+
+  const panel = document.createElement('div');
+  panel.style.cssText = `
+    width: 100%;
+    max-width: 420px;
+    background: #10182e;
+    border: 1px solid #35f5ff;
+    border-radius: 16px;
+    padding: 16px;
+    color: #e7f7ff;
+    text-align: center;
+    box-shadow: 0 0 24px #35f5ff30;
+  `;
+
+  const close = document.createElement('button');
+  close.textContent = '×';
+  close.setAttribute('aria-label', 'Tutup foto');
+  close.style.cssText = `
+    display: block;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    margin: 0 0 8px auto;
+    font-size: 30px;
+    background: #302050;
   `;
 
   const bigImg = document.createElement('img');
   bigImg.src = thumb.src;
   bigImg.alt = thumb.alt;
   bigImg.style.cssText = `
-    max-width: 95vw;
-    max-height: 85vh;
+    display: block;
+    width: 100%;
+    max-height: 48vh;
     object-fit: contain;
     background: white;
-    border-radius: 12px;
-    padding: 5px;
+    border-radius: 10px;
+    margin-bottom: 16px;
   `;
 
-  const close = document.createElement('button');
-  close.textContent = '×';
-  close.style.cssText = `
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    width: 48px;
-    height: 48px;
-    margin: 0;
-    font-size: 32px;
-    background: #302050;
+  const info = document.createElement('div');
+  info.style.cssText = `
+    text-align: left;
+    overflow-wrap: anywhere;
+    line-height: 1.8;
+    font-size: 15px;
   `;
 
-  close.onclick = () => overlay.remove();
-  overlay.onclick = e => {
-    if (e.target === overlay) overlay.remove();
-  };
+  const name = String(product.product_name || 'Tanpa nama');
+  const shortName = Array.from(name).slice(0, 10).join('');
 
-  overlay.append(bigImg, close);
+  const details = [
+    ['Nama', shortName],
+    ['Kategori', product.category ?? '—'],
+    ['Harga', product.price == null ? '—' :
+      'Rp ' + Number(product.price).toLocaleString('id-ID')],
+    ['Barcode', product.barcode ?? '—']
+  ];
+
+  details.forEach(([label, value]) => {
+    const line = document.createElement('div');
+    line.style.cssText =
+      'border-bottom:1px solid #263b59;padding:6px 0;';
+
+    const strong = document.createElement('strong');
+    strong.textContent = label + ': ';
+    strong.style.color = '#35f5ff';
+
+    const text = document.createElement('span');
+    text.textContent = String(value);
+
+    line.append(strong, text);
+    info.appendChild(line);
+  });
+
+  close.addEventListener('click', () => overlay.remove());
+  overlay.addEventListener('click', event => {
+    if (event.target === overlay) overlay.remove();
+  });
+
+  panel.append(close, bigImg, info);
+  overlay.appendChild(panel);
   document.body.appendChild(overlay);
 });
+  
+
 
     thumb.src = String(product.image_url || '').trim() || getProductImageUrl(product.barcode);
     thumb.onerror = () => {
