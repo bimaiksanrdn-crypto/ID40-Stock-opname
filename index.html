@@ -822,6 +822,16 @@ async function searchProducts(scannedBarcode = '') {
   const term = (scannedBarcode || $('productSearch').value).trim();
   const rows = $('productRows');
   rows.replaceChildren();
+  const jumlahAngka = (term.match(/\d/g) || []).length;
+const jumlahHuruf = (term.match(/[a-zA-Z]/g) || []).length;
+
+if (jumlahAngka < 6 && jumlahHuruf < 6) {
+  showMessage(
+    'productStatus',
+    'Ketik minimal 6 angka barcode atau 6 huruf nama barang.'
+  );
+  return;
+}
 
   if (!term) {
     showMessage('productStatus', 'Masukkan nama barang atau barcode terlebih dahulu.');
