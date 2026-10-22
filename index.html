@@ -1065,6 +1065,9 @@ $('logoutBtn').addEventListener('click', logout);
 $('refreshBtn').addEventListener('click', loadDashboard);
 $('searchBtn').addEventListener('click', () => searchProducts());
 $('productSearch').addEventListener('keydown', event => {
+  $('productSearch').addEventListener('input', () => {
+  searchProducts();
+});
   if (event.key === 'Enter') {
     event.preventDefault();
     searchProducts();
