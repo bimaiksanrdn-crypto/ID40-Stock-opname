@@ -869,17 +869,24 @@ if (jumlahAngka < 6 && jumlahHuruf < 6) {
     .from('products')
     .select('id, barcode, product_name, category, price, system_stock, image_url')
     .order('product_name')
-    .limit(100);
+    .limit(20);
 
   // Hasil scan dicari sebagai barcode persis agar tidak salah cocok dengan nama barang.
   if (scannedBarcode) {
     query = supabase.from('products')
       .select('id, barcode, product_name, category, price, system_stock, image_url')
       .eq('barcode', scannedBarcode)
-      .limit(100);
+      .limit(1);
   } else {
-    const safeTerm = term.replace(/[,%()]/g, '');
-    query = query.or(`barcode.eq.${safeTerm},product_name.ilike.%${safeTerm}%`);
+  const safeTerm = term.replace(/[,%()]/g, '');
+
+  if (/^\d+$/.test(safeTerm)) {
+    // Jika input angka, cari barcode yang cocok persis.
+    query = query.eq('barcode', safeTerm);
+  } else {
+    // Jika input nama, cari berdasarkan nama barang.
+    query = query.ilike('product_name', `%${safeTerm}%`);
+  }
   }
 
   const { data, error } = await query;
@@ -1140,15 +1147,16 @@ $('loginForm').addEventListener('submit', login);
 $('logoutBtn').addEventListener('click', logout);
 $('refreshBtn').addEventListener('click', loadDashboard);
 $('searchBtn').addEventListener('click', () => searchProducts());
-$('productSearch').addEventListener('keydown', event => {
-  $('productSearch').addEventListener('input', () => {
+$('searchBtn').addEventListener('click', () => {
   searchProducts();
 });
+
+$('productSearch').addEventListener('keydown', event => {
   if (event.key === 'Enter') {
     event.preventDefault();
     searchProducts();
   }
-});
+}); 
 $('scanBtn').addEventListener('click', startBarcodeScanner);
 $('previewImageBtn').addEventListener('click', showGoogleImagePreview);
 $('googleImageLink').addEventListener('keydown', event => {
