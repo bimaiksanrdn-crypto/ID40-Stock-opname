@@ -92,6 +92,20 @@ input,button,select{width:100%;padding:13px;margin-top:10px;border:1px solid rgb
   </section>
 
   <section id="dashboard" hidden>
+        <div class="card" id="modePicker">
+      <h3>Mau melakukan apa?</h3>
+      <p class="small">Pilih mode sesuai kebutuhan kamu.</p>
+
+      <button id="checkModeBtn" type="button">
+        🔎 Cek Barang
+      </button>
+
+      <button id="soModeBtn" type="button">
+        📋 Stock Opname
+      </button>
+
+      <p id="modeStatus" class="small"></p>
+        </div>
     <div class="card">
       <h3 id="welcome">Dashboard</h3>
       <p id="userInfo" class="small"></p>
@@ -99,14 +113,16 @@ input,button,select{width:100%;padding:13px;margin-top:10px;border:1px solid rgb
       <button id="logoutBtn" class="secondary">Logout</button>
     </div>
 
-    <div class="card">
-      <h3>Ringkasan</h3>
+<div class="card" data-mode-section="so" hidden>
+  <h3>Ringkasan</h3>
       <div class="grid">
         <div class="stat">Jumlah produk<strong id="productTotal">—</strong></div>
         <div class="stat">Sesi SO aktif<strong id="sessionTotal">—</strong></div>
       </div>
     </div>
 
+    <div class="card" data-mode-section="shared" hidden>
+  <h3>Data Barang</h3>
     <div class="card">
       <h3>Data Barang</h3>
       <label for="activeSessionSelect">Sesi Stock Opname aktif</label>
@@ -149,6 +165,8 @@ input,button,select{width:100%;padding:13px;margin-top:10px;border:1px solid rgb
       </div>
     </div>
 
+      <div class="card" data-mode-section="so" hidden>
+  <h3>Hasil Hitungan Fisik</h3>
     <div class="card">
       <h3>Hasil Hitungan Fisik</h3>
       <p class="small">Scan barcode berulang kali untuk menambah hitungan satu per scan, atau gunakan tombol +1 dari hasil pencarian. Kamu bisa mengubah jumlah fisik secara manual.</p>
@@ -166,6 +184,8 @@ input,button,select{width:100%;padding:13px;margin-top:10px;border:1px solid rgb
       <p id="saveOpnameStatus" class="small" role="status"></p>
     </div>
 
+        <div class="card" data-mode-section="so" hidden>
+  <h3>Pratinjau Gambar dari Google Drive</h3>
     <div class="card">
       <h3>Pratinjau Gambar dari Google Drive</h3>
       <p class="small">Opsional: uji link gambar produk secara manual. Foto produk hasil scan otomatis dicari dari server gambar Miniso menggunakan pola barcode-nya.</p>
@@ -178,6 +198,8 @@ input,button,select{width:100%;padding:13px;margin-top:10px;border:1px solid rgb
       <p class="small">Catatan: gambar Google Drive harus memiliki akses yang mengizinkan website melihatnya (misalnya “Siapa saja yang memiliki link”). Beberapa link Google tidak dapat ditampilkan langsung oleh browser.</p>
     </div>
 
+          <div class="card" data-mode-section="so" hidden>
+  <h3>Sesi Stock Opname</h3>
     <div class="card">
       <h3>Sesi Stock Opname</h3>
       <p class="small">Daftar sesi yang dapat dilihat oleh akun ini.</p>
@@ -185,6 +207,8 @@ input,button,select{width:100%;padding:13px;margin-top:10px;border:1px solid rgb
       <p id="sessionStatus" class="small"></p>
     </div>
 
+            <div class="card" data-mode-section="so" hidden>
+  <h3>Riwayat Hasil Stock Opname</h3>
     <div class="card" id="savedCountsCard">
       <h3>Riwayat Hasil Stock Opname</h3>
       <p class="small">Pilih satu sesi untuk menarik hasil yang sudah tersimpan di tabel <code>so_counts</code>.</p>
@@ -206,6 +230,8 @@ input,button,select{width:100%;padding:13px;margin-top:10px;border:1px solid rgb
       </div>
     </div>
 
+              <div class="card" data-mode-section="so" hidden>
+  <h3>SupervisorNotice</h3>
     <div id="supervisorNotice" class="card" hidden>
       <h3>Menu Supervisor</h3>
       <p>Akun supervisor terdeteksi. Fitur pengelolaan produk, karyawan, sesi SO, dan ekspor akan ditambahkan pada tahap berikutnya.</p>
@@ -1023,6 +1049,45 @@ thumb.addEventListener('click', () => {
   showMessage('productStatus', `Menampilkan ${data.length} barang (maksimal 100).`);
 }
 
+  function setAppMode(mode) {
+  const dashboard = $('dashboard');
+
+  // Sembunyikan semua bagian yang mengikuti pilihan mode.
+  document.querySelectorAll('[data-mode-section]').forEach(section => {
+    section.hidden = true;
+  });
+
+  if (!mode) {
+    $('modePicker').hidden = false;
+    $('modeStatus').textContent = 'Silakan pilih mode.';
+    return;
+  }
+
+  // Bagian pencarian barang selalu tersedia.
+  document.querySelectorAll('[data-mode-section="shared"]')
+    .forEach(section => section.hidden = false);
+
+  // Menu SO hanya tampil ketika mode SO dipilih.
+  document.querySelectorAll('[data-mode-section="so"]')
+    .forEach(section => section.hidden = mode !== 'so');
+
+  dashboard.classList.toggle('mode-check', mode === 'check');
+  dashboard.classList.toggle('mode-so', mode === 'so');
+
+  $('modePicker').hidden = false;
+  $('modeStatus').textContent =
+    mode === 'check'
+      ? 'Mode Cek Barang aktif.'
+      : 'Mode Stock Opname aktif.';
+}
+
+$('checkModeBtn').addEventListener('click', () => {
+  setAppMode('check');
+});
+
+$('soModeBtn').addEventListener('click', () => {
+  setAppMode('so');
+}); 
 async function login(event) {
   event.preventDefault();
   showMessage('loginStatus', 'Memeriksa akun...');
@@ -1048,6 +1113,7 @@ async function login(event) {
   currentProfile = profile;
   $('loginCard').hidden = true;
   $('dashboard').hidden = false;
+  setAppMode(null);
   $('welcome').textContent = 'Halo, ' + (profile.full_name || 'Pengguna') + '!';
   $('userInfo').textContent = 'Email: ' + data.user.email + ' | Peran: ' + profile.role;
   $('supervisorNotice').hidden = profile.role !== 'supervisor';
